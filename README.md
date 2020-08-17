@@ -1,3 +1,0 @@
-# quantmodel
-
-Test test test.
