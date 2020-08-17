@@ -1,0 +1,30 @@
+<bdsq>
+    <procedure name="CLEARDOWN" type="UPDATE" >
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+            )
+            BEGIN
+
+                delete from executions;
+                delete from releases;
+                delete from allocations;
+                delete from orders;
+                delete from position_overnight;
+                update system_parameter set value = '0' where name = 'curr_lot_id' and category = 'DEALING_ENGINE';
+                update system_parameter set value = '0' where name = 'curr_order_id' and category = 'DEALING_ENGINE';
+                update system_parameter set value = '0' where name = 'curr_release_id' and category = 'DEALING_ENGINE';
+                update system_parameter set value = '0' where name = 'curr_execution_id' and category = 'DEALING_ENGINE';
+                update system_parameter set value = '0' where name = 'curr_transaction_id' and category = 'DEALING_ENGINE';
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

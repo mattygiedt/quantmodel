@@ -1,0 +1,27 @@
+<bdsq>
+    <procedure name="GET_INSTRUMENT_BY_INSTRUMENT_ID" type="SELECT" >
+        <input name="p_instrument_id" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_instrument_id INT
+            )
+            BEGIN
+
+                SELECT  *
+                FROM    instrument
+                WHERE   instrument_id = p_instrument_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

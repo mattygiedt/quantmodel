@@ -1,0 +1,31 @@
+<bdsq>
+    <procedure name="GET_INSTRUMENT_ID_TYPE_BY_INVESTMENT_SYSTEM" type="SELECT" >
+        <input name="p_investment_system_id" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_investment_system_id VARCHAR(16)
+            )
+            BEGIN
+
+                --
+                --  Find the insrument id type
+                --
+
+                SELECT  instrument_id_type_id
+                FROM    instrument_lookup il
+                WHERE   investment_system_id = p_investment_system_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

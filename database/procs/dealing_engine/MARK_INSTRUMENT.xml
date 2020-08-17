@@ -1,0 +1,53 @@
+<bdsq>
+    <procedure name="MARK_INSTRUMENT" type="UPDATE" >
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_mark_prc" type="string" quote="true" />
+        <input name="p_mark_datetime" type="string" quote="true" />
+        <input name="p_updated_datetime" type="string" quote="true" />
+        <input name="p_updated_by" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_instrument_id INT ,
+                IN p_mark_prc VARCHAR(30) ,
+                IN p_mark_datetime CHAR(20) ,
+                IN p_updated_datetime CHAR(20) ,
+                IN p_updated_by VARCHAR(16)
+            )
+            BEGIN
+
+                UPDATE instrument SET
+                    mark_prc = p_mark_prc,
+                    mark_datetime = p_mark_datetime,
+                    updated_datetime = p_updated_datetime,
+                    updated_by = p_updated_by
+                WHERE instrument_id = p_instrument_id;
+
+                UPDATE instrument_mark_price SET
+                    is_current = 0
+                WHERE instrument_id = p_instrument_id
+                AND is_current = 1;
+
+                INSERT INTO instrument_mark_price (
+                    instrument_id,
+                    mark_prc,
+                    mark_datetime,
+                    is_current )
+                VALUES (
+                    p_instrument_id,
+                    p_mark_prc,
+                    p_mark_datetime,
+                    1 );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

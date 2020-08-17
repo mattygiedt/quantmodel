@@ -1,0 +1,34 @@
+<bdsq>
+    <procedure name="UPDATE_ACCOUNT_LIMIT_SESSION_IDS" type="UPDATE" >
+        <input name="p_account_id" type="string" quote="false" />
+        <input name="p_session_id" type="string" quote="true" />
+        <input name="p_updated_datetime" type="string" quote="true" />
+        <input name="p_updated_by" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_account_id INT,
+                IN p_session_id VARCHAR(64),
+                IN p_updated_datetime CHAR(17),
+                IN p_updated_by VARCHAR(16)
+            )
+            BEGIN
+
+                UPDATE account_limit SET
+                    session_id = p_session_id,
+                    updated_datetime = p_updated_datetime,
+                    updated_by = p_updated_by
+                WHERE account_id = p_account_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

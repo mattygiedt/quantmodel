@@ -1,0 +1,565 @@
+#include <iostream>
+#include <string>
+#include <list>
+#include <map>
+
+#include <log4cpp/Category.hh>
+#include <log4cpp/PropertyConfigurator.hh>
+
+#include <quantmodel.hpp>
+
+#include "RequestHandler.hpp"
+
+using namespace std;
+
+struct thread_args
+{
+    XMLNode* config;
+};
+
+void* heartbeat_thread( void *args )
+{
+    log4cpp::Category* log;
+    thread_args *pargs = (struct thread_args *) args;
+    const XMLNode& network_node = (*pargs->config).getChildNode( "network" );
+    log = &log4cpp::Category::getInstance( "HeartbeatThread" );
+
+    const int delay = atoi( (*pargs->config).getAttribute( "heartbeat" ) );
+    quantmodel::HeartbeatData heartbeat_data;
+
+    zmq::socket_t *heartbeat;
+    zmq::context_t ctx( 1 );
+
+    //
+    //  Create the heartbeat socket
+    //
+
+    if( network_node.isAttributeSet( "heartbeat_broadcast" ) )
+    {
+        log->info( " binding heartbeat_broadcast: %s",
+            network_node.getAttribute( "heartbeat_broadcast" ) );
+
+        heartbeat = new zmq::socket_t( ctx, ZMQ_PUB );
+        heartbeat->bind( network_node.getAttribute( "heartbeat_broadcast" ) );
+    }
+    else
+    {
+        log->error( " heartbeat_broadcast network address not set" );
+        pthread_exit( NULL );
+    }
+
+    while( 1 )
+    {
+        //
+        //  Sleep for 'delay' seconds and then send a heartbeat
+        //
+
+        sleep( delay );
+
+        //gettimeofday( &tv, NULL );
+        //printf( " heartbeat_thread wakeup:        %ld.%ld\n", tv.tv_sec, tv.tv_usec );
+
+        heartbeat_data.Clear();
+        quantmodel::TimeStamp::getMessageId( *heartbeat_data.mutable_heartbeat_id( ) );
+        quantmodel::TimeStamp::getUTCTime( *heartbeat_data.mutable_timestamp( ) );
+
+        if( unlikely( log->isDebugEnabled() ) )
+        {
+            log->debug( " <-- " + heartbeat_data.ShortDebugString() );
+        }
+
+        //gettimeofday( &tv, NULL );
+        //printf( " heartbeat_thread begin send:    %ld.%ld\n", tv.tv_sec, tv.tv_usec );
+
+        if(! quantmodel::ZMQMessage::send( &heartbeat_data, heartbeat ) )
+        {
+            log->fatal( "UNABLE TO SEND ON heartbeat SOCKET!!!" );
+            pthread_exit( NULL );
+        }
+
+        //gettimeofday( &tv, NULL );
+        //printf( " heartbeat_thread end send:      %ld.%ld\n", tv.tv_sec, tv.tv_usec );
+    }
+
+    pthread_exit( NULL );
+}
+
+void* broadcast_thread( void *args )
+{
+    log4cpp::Category* log;
+    thread_args *pargs = (struct thread_args *) args;
+
+    const XMLNode& network_node = (*pargs->config).getChildNode( "network" );
+    log = &log4cpp::Category::getInstance( "BroadcastThread" );
+
+    zmq::socket_t *sender, *dealing, *heartbeat, *marketdata;
+    zmq::context_t ctx( 1 );
+
+    sender = new zmq::socket_t( ctx, ZMQ_PUSH );
+    //sender = new zmq::socket_t( ctx, ZMQ_PAIR );
+    dealing = new zmq::socket_t( ctx, ZMQ_SUB );
+    heartbeat = new zmq::socket_t( ctx, ZMQ_SUB );
+    marketdata = new zmq::socket_t( ctx, ZMQ_SUB );
+
+    quantmodel::HeartbeatData heartbeat_data;
+    quantmodel::DealingEngineBroadcast dealing_broadcast;
+    quantmodel::MarketDataBroadcast marketdata_broadcast;
+    quantmodel::ClientAdapterBroadcast broadcast_msg;
+
+    //
+    //  Create the broadcast socket
+    //
+
+    if( network_node.isAttributeSet( "internal_broadcast" ) )
+    {
+        log->info( " connecting internal broadcast: %s",
+            network_node.getAttribute( "internal_broadcast" ) );
+
+        sender->connect( network_node.getAttribute( "internal_broadcast" ) );
+    }
+    else
+    {
+        log->error( " broadcast network address not set" );
+
+        delete sender;
+        delete dealing;
+        delete heartbeat;
+        delete marketdata;
+
+        pthread_exit( NULL );
+    }
+
+    //
+    //  Connect to the dealing engine broadcast
+    //
+
+    if( network_node.isAttributeSet( "dealing_broadcast" ) )
+    {
+        log->info( " connecting to dealing_broadcast: %s",
+            network_node.getAttribute( "dealing_broadcast" ) );
+
+        dealing->setsockopt( ZMQ_SUBSCRIBE, "", 0 );
+        dealing->connect( network_node.getAttribute( "dealing_broadcast" ) );
+    }
+    else
+    {
+        log->error( " dealing_broadcast network address not set" );
+
+        delete sender;
+        delete dealing;
+        delete heartbeat;
+        delete marketdata;
+
+        pthread_exit( NULL );
+    }
+
+    //
+    //  Connect to the heartbeat broadcast
+    //
+
+    if( network_node.isAttributeSet( "heartbeat_broadcast" ) )
+    {
+        log->info( " connecting to heartbeat_broadcast: %s",
+            network_node.getAttribute( "heartbeat_broadcast" ) );
+
+        heartbeat->setsockopt( ZMQ_SUBSCRIBE, "", 0 );
+        heartbeat->connect( network_node.getAttribute( "heartbeat_broadcast" ) );
+    }
+    else
+    {
+        log->error( " marketdata_broadcast network address not set" );
+
+        delete sender;
+        delete dealing;
+        delete heartbeat;
+        delete marketdata;
+
+        pthread_exit( NULL );
+    }
+
+    //
+    //  Connect to the market data engine broadcast
+    //
+
+    if( network_node.isAttributeSet( "marketdata_broadcast" ) )
+    {
+        log->info( " connecting to marketdata_broadcast: %s",
+            network_node.getAttribute( "marketdata_broadcast" ) );
+
+        marketdata->setsockopt( ZMQ_SUBSCRIBE, "", 0 );
+        marketdata->connect( network_node.getAttribute( "marketdata_broadcast" ) );
+    }
+    else
+    {
+        log->error( " marketdata_broadcast network address not set" );
+
+        delete sender;
+        delete dealing;
+        delete heartbeat;
+        delete marketdata;
+
+        pthread_exit( NULL );
+    }
+
+    //
+    //  Setup the poll item array
+    //
+
+    zmq::pollitem_t items [ ] =
+    {
+        { (*dealing), 0, ZMQ_POLLIN, 0 },
+        { (*marketdata), 0, ZMQ_POLLIN, 0 },
+        { (*heartbeat), 0, ZMQ_POLLIN, 0 }
+    };
+
+    log->info( " broadcast thread initialized." );
+
+    while( 1 )
+    {
+        const int rc = zmq::poll( items, 3, -1 );
+
+        if( rc == 0 )
+        {
+            //
+            //  ERROR!!!
+            //
+
+            log->error( "zmq_poll returned 0" );
+            continue;
+        }
+        else if( rc == -1 )
+        {
+            //
+            //  ERROR!!!
+            //
+
+            log->fatal( "Unable to poll rc = %d", rc );
+            pthread_exit( NULL );
+        }
+        else
+        {
+            broadcast_msg.Clear();
+
+            if( items[ 0 ].revents == ZMQ_POLLIN )
+            {
+                if(! quantmodel::ZMQMessage::recv( &dealing_broadcast, dealing ) )
+                {
+                    log->fatal( "UNABLE TO RECV ON dealing SOCKET!!!" );
+                    pthread_exit( NULL );
+                }
+
+                if( unlikely( log->isDebugEnabled() ) )
+                {
+                    log->debug( " --> " + dealing_broadcast.ShortDebugString() );
+                }
+
+                //
+                //  Copy the dealing broadcast to the broadcast_msg
+                //
+
+                broadcast_msg.set_type( quantmodel::ClientAdapterBroadcast::DEALING );
+                broadcast_msg.mutable_dealing_broadcast()->CopyFrom( dealing_broadcast );
+            }
+            else if( items[ 1 ].revents == ZMQ_POLLIN )
+            {
+                if(! quantmodel::ZMQMessage::recv( &marketdata_broadcast, marketdata ) )
+                {
+                    log->fatal( "UNABLE TO RECV ON marketdata SOCKET!!!" );
+                    pthread_exit( NULL );
+                }
+
+                if( unlikely( log->isDebugEnabled() ) )
+                {
+                    log->debug( " --> " + marketdata_broadcast.ShortDebugString() );
+                }
+
+                //
+                //  Copy the marketdata broadcast to the broadcast_msg
+                //
+
+                broadcast_msg.set_type( quantmodel::ClientAdapterBroadcast::MARKETDATA );
+                broadcast_msg.mutable_marketdata_broadcast()->CopyFrom( marketdata_broadcast );
+            }
+            else if( items[ 2 ].revents == ZMQ_POLLIN )
+            {
+                //gettimeofday( &tv, NULL );
+                //printf( " broadcast_thread begin receive: %ld.%ld\n", tv.tv_sec, tv.tv_usec );
+
+                if(! quantmodel::ZMQMessage::recv( &heartbeat_data, heartbeat ) )
+                {
+                    log->fatal( "UNABLE TO RECV ON heartbeat SOCKET!!!" );
+                    pthread_exit( NULL );
+                }
+
+                if( unlikely( log->isDebugEnabled() ) )
+                {
+                    log->debug( " --> " + heartbeat_data.ShortDebugString() );
+                }
+
+                //
+                //  Copy the heartbeat data to the broadcast_msg
+                //
+
+                broadcast_msg.set_type( quantmodel::ClientAdapterBroadcast::HEARTBEAT );
+                broadcast_msg.mutable_heartbeat_data()->CopyFrom( heartbeat_data );
+            }
+            else
+            {
+                log->fatal( "invalid poll state." );
+                pthread_exit( NULL );
+            }
+
+            //
+            //  Set the message id and send
+            //
+
+            quantmodel::TimeStamp::getMessageId( *broadcast_msg.mutable_broadcast_id( ) );
+            quantmodel::TimeStamp::getUTCTime( *broadcast_msg.mutable_timestamp( ) );
+
+            if( unlikely( log->isDebugEnabled() ) )
+            {
+                log->debug( " <-- " + broadcast_msg.ShortDebugString() );
+            }
+
+            //gettimeofday( &tv, NULL );
+            //printf( " broadcast_thread begin send:    %ld.%ld\n", tv.tv_sec, tv.tv_usec );
+
+            if(! quantmodel::ZMQMessage::send( &broadcast_msg, sender ) )
+            {
+                log->fatal( "UNABLE TO SEND ON broadcast SOCKET!!!" );
+                pthread_exit( NULL );
+            }
+
+            //gettimeofday( &tv, NULL );
+            //printf( " broadcast_thread end send:      %ld.%ld\n\n", tv.tv_sec, tv.tv_usec );
+        }
+    }
+
+    pthread_exit( NULL );
+}
+
+void initLogging( XMLNode& config )
+{
+    const XMLNode node = config.getChildNode( "logging" );
+    log4cpp::PropertyConfigurator::configure( node.getAttribute( "properties" ) );
+}
+
+void initNetwork( const XMLNode& config, zmq::context_t& ctx, std::map< const std::string , zmq::socket_t* >& socket_map, log4cpp::Category* log )
+{
+    zmq::socket_t *s = NULL;
+    const XMLNode network_node = config.getChildNode( "network" );
+
+    if( network_node.isAttributeSet( "dealing_callforward" ) )
+    {
+        log->info( " connecting to dealing callforward: %s", network_node.getAttribute( "dealing_callforward" ) );
+        s = new zmq::socket_t( ctx, ZMQ_REQ );
+        s->connect( network_node.getAttribute( "dealing_callforward" ) );
+        socket_map.insert( std::pair< const std::string , zmq::socket_t* >( "dealing_callforward", s ) );
+    }
+    else
+    {
+        log->fatal( "dealing_callforward not set." );
+        exit( 1 );
+    }
+
+    if( network_node.isAttributeSet( "database_callforward" ) )
+    {
+        log->info( " connecting to database callforward: %s", network_node.getAttribute( "database_callforward" ) );
+        s = new zmq::socket_t( ctx, ZMQ_REQ );
+        s->connect( network_node.getAttribute( "database_callforward" ) );
+        socket_map.insert( std::pair< const std::string , zmq::socket_t* >( "database_callforward", s ) );
+    }
+    else
+    {
+        log->fatal( "database_callforward not set." );
+        exit( 1 );
+    }
+
+    if( network_node.isAttributeSet( "internal_callforward" ) )
+    {
+        log->info( " connecting internal callforward: %s", network_node.getAttribute( "internal_callforward" ) );
+        s = new zmq::socket_t( ctx, ZMQ_REP );
+        s->connect( network_node.getAttribute( "internal_callforward" ) );
+        socket_map.insert( std::pair< const std::string , zmq::socket_t* >( "internal_callforward", s ) );
+    }
+    else
+    {
+        log->fatal( "internal_callforward not set." );
+        exit( 1 );
+    }
+}
+
+int main( int argc, char *argv[] )
+{
+    std::string msg_data;
+    log4cpp::Category* log;
+    zmq::context_t ctx( 1 );
+
+    pthread_t bcast_thread, hbeat_thread;
+    struct thread_args broadcast_args, heartbeat_args;
+
+    std::map< const std::string , zmq::socket_t* > socket_map;
+
+    quantmodel::ClientAdapterRequest request_msg;
+    quantmodel::ClientAdapterResponse response_msg;
+
+    //if( argc == 1 )
+    //{
+    //    cerr << " usage: ClientAdapter [config.xml]" << endl;
+    //    exit( 1 );
+    //}
+    //
+    ////
+    ////  Load the configuration file
+    ////
+    //
+    //cout << "Loading configuration file: " << argv[ 1 ] << endl;
+    //XMLNode config = XMLNode::openFileHelper( argv[ 1 ] );
+    XMLNode config = XMLNode::openFileHelper( "../config/clientAdapter.xml" );
+
+    //
+    //  Setup log4cpp
+    //
+
+    initLogging( config );
+    log = &log4cpp::Category::getInstance( "ClientAdapter" );
+
+    //
+    //  Create the internal (ZMQ) network connections
+    //
+
+    initNetwork( config, ctx, socket_map, log );
+
+    //
+    //  Create the request handler
+    //
+
+    client_adapter::RequestHandler handler ( socket_map );
+    handler.initLogging();
+
+    //
+    //  Initialize the thread args
+    //
+
+    heartbeat_args.config = &config;
+    broadcast_args.config = &config;
+
+    //
+    //  Start the heartbeat thread
+    //
+
+    if( pthread_create( &hbeat_thread, NULL, heartbeat_thread, &heartbeat_args ) )
+    {
+        log->fatal( "Failed to create heartbeat thread." );
+        exit( 1 );
+    }
+
+    //
+    //  Start the broadcast thread
+    //
+
+    if( pthread_create( &bcast_thread, NULL, broadcast_thread, &broadcast_args ) )
+    {
+        log->fatal( "Failed to create broadcast thread." );
+        exit( 1 );
+    }
+
+    while( 1 )
+    {
+        msg_data.clear();
+        if(! quantmodel::ZMQMessage::recv( msg_data, socket_map[ "internal_callforward" ] ) )
+        {
+            log->fatal( "UNABLE TO RECV ON internal_callforward SOCKET!!!" );
+            exit( 1 );
+        }
+
+        //
+        //  Try to parse the request into a protobuf
+        //
+
+        request_msg.Clear();
+        response_msg.Clear();
+
+        if(! request_msg.ParseFromString( msg_data ) )
+        {
+            log->error( "Received %ld bytes of invalid data from socket_proxy.", msg_data.size() );
+
+            //
+            //  Could not create a request message from the msg_data.
+            //
+
+            response_msg.set_request_id( "INVALID" );
+            response_msg.set_session_id( "INVALID" );
+            response_msg.set_error_msg( "INVALID REQUEST_MSG" );
+            response_msg.set_type( quantmodel::ClientAdapterResponse::ERROR );
+            quantmodel::TimeStamp::getMessageId( *response_msg.mutable_response_id( ) );
+            quantmodel::TimeStamp::getUTCTime( *response_msg.mutable_timestamp( ) );
+
+            if(! quantmodel::ZMQMessage::send( &response_msg, socket_map[ "internal_callforward" ] ) )
+            {
+                log->fatal( "UNABLE TO SEND ON internal_callforward SOCKET!!!" );
+                exit( 1 );
+            }
+
+            continue;
+        }
+
+        if( unlikely( log->isDebugEnabled() ) )
+        {
+            log->debug( " --> " + request_msg.ShortDebugString() );
+        }
+
+        //
+        //  Service the request based on the request type
+        //
+
+        switch( request_msg.type() )
+        {
+            case quantmodel::ClientAdapterRequest::HEARTBEAT:
+
+                handler.heartbeat( request_msg, response_msg );
+                break;
+
+            case quantmodel::ClientAdapterRequest::DATABASE:
+
+                handler.databaseRequest( request_msg, response_msg );
+                break;
+
+            case quantmodel::ClientAdapterRequest::DEALING:
+
+                handler.dealingRequest( request_msg, response_msg );
+                break;
+
+            case quantmodel::ClientAdapterRequest::SHUTDOWN:
+
+                log->warn( "Initiating ClientAdapter Shutdown" );
+                response_msg.set_request_id( request_msg.request_id() );
+                response_msg.set_session_id( request_msg.session_id() );
+                quantmodel::TimeStamp::getMessageId( *response_msg.mutable_response_id( ) );
+                quantmodel::TimeStamp::getUTCTime( *response_msg.mutable_timestamp( ) );
+                quantmodel::ZMQMessage::send( &response_msg, socket_map[ "internal_callforward" ] );
+                sleep( 1 );
+                exit( 0 );
+        }
+
+        //
+        //  Send the response back to the client
+        //
+
+        response_msg.set_request_id( request_msg.request_id() );
+        response_msg.set_session_id( request_msg.session_id() );
+        quantmodel::TimeStamp::getMessageId( *response_msg.mutable_response_id( ) );
+        quantmodel::TimeStamp::getUTCTime( *response_msg.mutable_timestamp( ) );
+
+        if( unlikely( log->isDebugEnabled() ) )
+        {
+            log->debug( " <-- " + response_msg.ShortDebugString() );
+        }
+
+        if(! quantmodel::ZMQMessage::send( &response_msg, socket_map[ "internal_callforward" ] ) )
+        {
+            log->fatal( "UNABLE TO SEND ON internal_callforward SOCKET!!!" );
+            exit( 1 );
+        }
+    }
+}

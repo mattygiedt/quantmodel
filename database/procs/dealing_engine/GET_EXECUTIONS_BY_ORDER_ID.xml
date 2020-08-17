@@ -1,0 +1,28 @@
+<bdsq>
+    <procedure name="GET_EXECUTIONS_BY_ORDER_ID" type="SELECT">
+        <input name="p_order_id" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_order_id VARCHAR(16)
+            )
+            BEGIN
+
+                SELECT  *
+                FROM    executions
+                WHERE   order_id = p_order_id
+                ORDER BY added_datetime;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

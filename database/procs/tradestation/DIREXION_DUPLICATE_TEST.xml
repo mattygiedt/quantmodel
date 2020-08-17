@@ -1,0 +1,41 @@
+<bdsq>
+    <procedure name="DIREXION_DUPLICATE_TEST" type="SELECT" >
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_strategy_id" type="string" quote="true" />
+        <input name="p_order_type" type="string" quote="true" />
+        <input name="p_side" type="string" quote="true" />
+        <input name="p_price" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_instrument_id INT,
+                IN p_strategy_id VARCHAR(32),
+                IN p_order_type VARCHAR(8),
+                IN p_side VARCHAR(8),
+                IN p_price VARCHAR(16)
+            )
+            BEGIN
+
+                SELECT *
+                FROM tradestation_order tso, orders o
+                WHERE tso.instrument_id = p_instrument_id
+                AND tso.strategy_id = p_strategy_id
+                AND tso.order_type = p_order_type
+                AND tso.side = p_side
+                AND tso.price = p_price
+                AND tso.order_id = o.order_id
+                AND o.order_status < 5
+                ORDER BY tradestation_order_id desc;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+ 

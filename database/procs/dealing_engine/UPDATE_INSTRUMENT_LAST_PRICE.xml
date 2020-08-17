@@ -1,0 +1,34 @@
+<bdsq>
+    <procedure name="UPDATE_INSTRUMENT_LAST_PRICE" type="UPDATE" >
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_last_prc" type="string" quote="true" />
+        <input name="p_updated_datetime" type="string" quote="true" />
+        <input name="p_updated_by" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_instrument_id INT ,
+                IN p_last_prc VARCHAR(30) ,
+                IN p_updated_datetime CHAR(20) ,
+                IN p_updated_by VARCHAR(16)
+            )
+            BEGIN
+
+                UPDATE instrument SET
+                    last_prc = p_last_prc,
+                    updated_datetime = p_updated_datetime,
+                    updated_by = p_updated_by
+                WHERE instrument_id = p_instrument_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

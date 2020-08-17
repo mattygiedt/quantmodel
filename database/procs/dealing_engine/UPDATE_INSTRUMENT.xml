@@ -1,0 +1,82 @@
+<bdsq>
+    <procedure name="UPDATE_INSTRUMENT" type="UPDATE" >
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_instrument_type" type="string" quote="false" />
+        <input name="p_name" type="string" quote="true" />
+        <input name="p_security_id" type="string" quote="true" />
+        <input name="p_symbol" type="string" quote="true" />
+        <input name="p_cusip" type="string" quote="true" />
+        <input name="p_sedol" type="string" quote="true" />
+        <input name="p_isin" type="string" quote="true" />
+        <input name="p_ric" type="string" quote="true" />
+        <input name="p_security_type" type="string" quote="true" />
+        <input name="p_security_desc" type="string" quote="true" />
+        <input name="p_security_exchange" type="string" quote="true" />
+        <input name="p_maturity_month_year" type="string" quote="true" />
+        <input name="p_base_ccy" type="string" quote="true" />
+        <input name="p_last_prc" type="string" quote="true" />
+        <input name="p_multiplier" type="string" quote="true" />
+        <input name="p_exchange_price_factor" type="string" quote="true" />
+        <input name="p_is_active" type="string" quote="false" />
+        <input name="p_updated_datetime" type="string" quote="true" />
+        <input name="p_updated_by" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_instrument_id INT ,
+                IN p_instrument_type INT ,
+                IN p_name VARCHAR(64) ,
+                IN p_symbol VARCHAR(16) ,
+                IN p_security_id VARCHAR(32) ,
+                IN p_cusip VARCHAR(32) ,
+                IN p_sedol VARCHAR(32) ,
+                IN p_isin VARCHAR(32) ,
+                IN p_ric VARCHAR(32) ,
+                IN p_security_type VARCHAR(8) ,
+                IN p_security_desc VARCHAR(16) ,
+                IN p_security_exchange VARCHAR(8) ,
+                IN p_maturity_month_year VARCHAR(8) ,
+                IN p_base_ccy CHAR(3) ,
+                IN p_last_prc VARCHAR(30) ,
+                IN p_multiplier VARCHAR(30) ,
+                IN p_exchange_price_factor VARCHAR(30) ,
+                IN p_is_active TINYINT(1) ,
+                IN p_updated_datetime CHAR(20) ,
+                IN p_updated_by VARCHAR(16)
+            )
+            BEGIN
+
+                UPDATE instrument SET
+                    instrument_type = p_instrument_type,
+                    name = p_name,
+                    symbol = p_symbol,
+                    security_id = p_security_id,
+                    cusip = p_cusip,
+                    sedol = p_sedol,
+                    isin = p_isin,
+                    ric = p_ric,
+                    security_type = p_security_type,
+                    security_desc = p_security_desc,
+                    security_exchange = p_security_exchange,
+                    maturity_month_year = p_maturity_month_year,
+                    base_ccy = p_base_ccy,
+                    last_prc = p_last_prc,
+                    multiplier = p_multiplier,
+                    exchange_price_factor = p_exchange_price_factor,
+                    is_active = p_is_active,
+                    updated_datetime = p_updated_datetime,
+                    updated_by = p_updated_by
+                WHERE instrument_id = p_instrument_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

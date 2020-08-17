@@ -1,0 +1,29 @@
+<bdsq>
+    <procedure name="GET_FIX_EVENTS_BY_ORDER_ID" type="SELECT" >
+        <input name="p_order_id" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_order_id VARCHAR(16)
+            )
+            BEGIN
+
+                SELECT  f.*
+                FROM    fix_audit f, client_order_id_map m
+                WHERE   m.order_id = p_order_id
+                    AND f.clordid = m.client_order_id
+                ORDER BY f.added_datetime;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

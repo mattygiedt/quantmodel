@@ -1,0 +1,30 @@
+<bdsq>
+    <procedure name="GET_STRATEGY_BY_STRATEGY_ID" type="SELECT" >
+        <input name="p_strategy_id" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS `SP_NAME`;
+
+            DELIMITER |
+
+            CREATE PROCEDURE `SP_NAME`(
+                IN p_strategy_id INT
+            )
+            BEGIN
+
+                SELECT  strategy_id,
+                        investment_system_id,
+                        signal_id,
+                        name,
+                        is_active
+                FROM    strategy
+                WHERE   strategy_id = p_strategy_id
+                ORDER BY 1;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

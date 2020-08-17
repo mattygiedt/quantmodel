@@ -1,0 +1,27 @@
+<bdsq>
+    <procedure name="GET_MARKET_DATA_EVENTS_BY_TIMEBAR_KEY" type="SELECT" >
+        <input name="p_timebar_key" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_timebar_key CHAR(14)
+            )
+            BEGIN
+
+                SELECT * FROM market_data_event
+                WHERE timebar_key = p_timebar_key
+                ORDER BY market_data_event_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

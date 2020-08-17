@@ -1,0 +1,36 @@
+<bdsq>
+    <procedure name="GET_INVESTMENT_SYSTEMS" type="SELECT" >
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS `SP_NAME`;
+
+            DELIMITER |
+
+            CREATE PROCEDURE `SP_NAME`(
+            )
+            BEGIN
+
+                --
+                --  This is how we used to do it, prior to now requiring
+                --  instrument_id on the signal request.
+                --
+                -- SELECT  i_s.investment_system_id,
+                --         i_s.name,
+                --         i_s.is_active,
+                --         i_l.instrument_id_type_id
+                -- FROM    investment_system i_s, instrument_lookup i_l
+                -- WHERE   i_s.investment_system_id = i_l.investment_system_id
+                -- ORDER BY i_s.name;
+
+                SELECT  *
+                FROM    investment_system
+                ORDER BY investment_system_id;
+
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

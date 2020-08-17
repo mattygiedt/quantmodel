@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/bdsquant/!svn/ver/637/trunk/source/task_engine/java/src/com/quantmodel/engine/task
+END
+MarkInstrument.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/bdsquant/!svn/ver/637/trunk/source/task_engine/java/src/com/quantmodel/engine/task/MarkInstrument.java
+END
+ProcessExec.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/bdsquant/!svn/ver/446/trunk/source/task_engine/java/src/com/quantmodel/engine/task/ProcessExec.java
+END
+Rollover.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/bdsquant/!svn/ver/432/trunk/source/task_engine/java/src/com/quantmodel/engine/task/Rollover.java
+END
+MarketDataCompressor.java
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/bdsquant/!svn/ver/451/trunk/source/task_engine/java/src/com/quantmodel/engine/task/MarketDataCompressor.java
+END
+MarkCMEInstruments.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/bdsquant/!svn/ver/637/trunk/source/task_engine/java/src/com/quantmodel/engine/task/MarkCMEInstruments.java
+END

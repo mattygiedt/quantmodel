@@ -1,0 +1,114 @@
+<bdsq>
+    <procedure name="INSERT_EXECUTION" type="UPDATE" >
+        <input name="p_id" type="string" quote="false" />
+        <input name="p_execution_id" type="string" quote="true" />
+        <input name="p_session_id" type="string" quote="true" />
+        <input name="p_account_id" type="string" quote="false" />
+        <input name="p_order_id" type="string" quote="true" />
+        <input name="p_release_id" type="string" quote="true" />
+        <input name="p_investment_system_id" type="string" quote="true" />
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_client_order_id" type="string" quote="true" />
+        <input name="p_counterparty_execution_id" type="string" quote="true" />
+        <input name="p_side_code" type="string" quote="false" />
+        <input name="p_execution_ccy" type="string" quote="true" />
+        <input name="p_execution_status" type="string" quote="true" />
+        <input name="p_execution_prc" type="string" quote="true" />
+        <input name="p_execution_qty" type="string" quote="true" />
+        <input name="p_execution_val" type="string" quote="true" />
+        <input name="p_leaves_qty" type="string" quote="true" />
+        <input name="p_average_prc" type="string" quote="true" />
+        <input name="p_leg_type" type="string" quote="false" />
+        <input name="p_added_datetime" type="string" quote="true" />
+        <input name="p_added_by" type="string" quote="true" />
+        <input name="p_updated_datetime" type="string" quote="true" />
+        <input name="p_updated_by" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_id INT,
+                IN p_execution_id VARCHAR(16),
+                IN p_session_id VARCHAR(64),
+                IN p_account_id INT,
+                IN p_order_id VARCHAR(16),
+                IN p_release_id VARCHAR(16),
+                IN p_investment_system_id VARCHAR(16),
+                IN p_instrument_id INT,
+                IN p_client_order_id VARCHAR(32),
+                IN p_counterparty_execution_id VARCHAR(32),
+                IN p_side_code TINYINT,
+                IN p_execution_ccy CHAR(3),
+                IN p_execution_status TINYINT,
+                IN p_execution_prc VARCHAR(30),
+                IN p_execution_qty VARCHAR(30),
+                IN p_execution_val VARCHAR(30),
+                IN p_leaves_qty VARCHAR(30),
+                IN p_average_prc VARCHAR(30),
+                IN p_leg_type TINYINT,
+                IN p_added_datetime CHAR(20),
+                IN p_added_by VARCHAR(16),
+                IN p_updated_datetime CHAR(20),
+                IN p_updated_by VARCHAR(16)
+            )
+            BEGIN
+
+                CALL UPDATE_PARAMETER( 'DEALING_ENGINE', 'curr_execution_id', p_id );
+
+                INSERT INTO executions (
+                    execution_id,
+                    session_id,
+                    account_id,
+                    order_id,
+                    release_id,
+                    investment_system_id,
+                    instrument_id,
+                    client_order_id,
+                    counterparty_execution_id,
+                    side_code,
+                    execution_ccy,
+                    execution_status,
+                    execution_prc,
+                    execution_qty,
+                    execution_val,
+                    leaves_qty,
+                    average_prc,
+                    leg_type,
+                    added_datetime,
+                    added_by,
+                    updated_datetime,
+                    updated_by )
+                VALUES (
+                    p_execution_id,
+                    p_session_id,
+                    p_account_id,
+                    p_order_id,
+                    p_release_id,
+                    p_investment_system_id,
+                    p_instrument_id,
+                    p_client_order_id,
+                    p_counterparty_execution_id,
+                    p_side_code,
+                    p_execution_ccy,
+                    p_execution_status,
+                    p_execution_prc,
+                    p_execution_qty,
+                    p_execution_val,
+                    p_leaves_qty,
+                    p_average_prc,
+                    p_leg_type,
+                    p_added_datetime,
+                    p_added_by,
+                    p_updated_datetime,
+                    p_updated_by );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

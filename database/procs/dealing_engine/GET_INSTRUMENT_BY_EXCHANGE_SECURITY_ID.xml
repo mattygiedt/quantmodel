@@ -1,0 +1,30 @@
+<bdsq>
+    <procedure name="GET_INSTRUMENT_BY_EXCHANGE_SECURITY_ID" type="SELECT" >
+        <input name="p_security_exchange" type="string" quote="true" />
+        <input name="p_security_id" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_security_exchange VARCHAR(8),
+                IN p_security_id VARCHAR(32)
+            )
+            BEGIN
+
+                SELECT  i.*
+                FROM    instrument i
+                WHERE   i.security_id = p_security_id
+                AND     i.security_exchange = p_security_exchange;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

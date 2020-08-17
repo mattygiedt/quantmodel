@@ -1,0 +1,50 @@
+<bdsq>
+    <procedure name="USER_LOGIN" type="SELECT" >
+        <input name="p_username" type="string" quote="true" />
+        <input name="p_password" type="string" quote="true" />
+        <input name="p_application_id" type="string" quote="true" />
+        <input name="p_session" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS `SP_NAME`;
+
+            DELIMITER |
+
+            CREATE PROCEDURE `SP_NAME`(
+                IN p_username VARCHAR(32),
+                IN p_password VARCHAR(32),
+                IN p_application_id CHAR(8),
+                IN p_session VARCHAR(64)
+            )
+            BEGIN
+
+                INSERT INTO login_audit (
+                    username,
+                    password,
+                    application,
+                    session,
+                    timestamp )
+                VALUES (
+                    p_username,
+                    p_password,
+                    p_application_id,
+                    p_session,
+                    UTC_TIMESTAMP() );
+
+                SELECT  u.user_id
+                FROM    user u, user_application ua, application a
+                WHERE   u.username = p_username
+                AND     u.password = p_password
+                AND     u.is_active = 1
+                AND     ua.user_id = u.user_id
+                AND     ua.application_id = a.application_id
+                AND     a.application_id = p_application_id;
+
+            END|
+            DELIMITER ;
+
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

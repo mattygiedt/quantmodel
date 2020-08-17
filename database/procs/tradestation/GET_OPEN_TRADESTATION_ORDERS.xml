@@ -1,0 +1,26 @@
+<bdsq>
+    <procedure name="GET_OPEN_TRADESTATION_ORDERS" type="SELECT" >
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+            )
+            BEGIN
+
+                SELECT  *
+                FROM    tradestation_order
+                WHERE   is_open = 1
+                ORDER BY order_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

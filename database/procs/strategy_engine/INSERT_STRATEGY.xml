@@ -1,0 +1,43 @@
+<bdsq>
+    <procedure name="INSERT_STRATEGY" type="UPDATE" >
+        <input name="p_investment_system_id" type="string" quote="true" />
+        <input name="p_signal_id" type="string" quote="true" />
+        <input name="p_name" type="string" quote="true" />
+        <input name="p_default_weight" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS `SP_NAME`;
+
+            DELIMITER |
+
+            CREATE PROCEDURE `SP_NAME`(
+                IN p_investment_system_id VARCHAR(16),
+                IN p_signal_id VARCHAR(32),
+                IN p_name VARCHAR(32),
+                IN p_default_weight INT
+            )
+            BEGIN
+
+                INSERT INTO strategy (
+                    investment_system_id,
+                    signal_id,
+                    name,
+                    default_weight,
+                    is_active )
+                VALUES (
+                    p_investment_system_id,
+                    p_signal_id,
+                    p_name,
+                    p_default_weight,
+                    0
+                );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

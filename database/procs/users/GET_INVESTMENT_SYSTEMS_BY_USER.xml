@@ -1,0 +1,29 @@
+<bdsq>
+    <procedure name="GET_INVESTMENT_SYSTEMS_BY_USER" type="SELECT" >
+        <input name="p_user_id" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_user_id INT
+            )
+            BEGIN
+
+                SELECT  i.*
+                FROM    investment_system i, user_investment_system uis
+                WHERE   uis.user_id = p_user_id
+                AND     uis.investment_system_id = i.investment_system_id
+                ORDER BY i.investment_system_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

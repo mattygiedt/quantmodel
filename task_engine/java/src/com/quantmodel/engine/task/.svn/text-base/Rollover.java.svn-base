@@ -1,0 +1,67 @@
+package com.quantmodel.engine.task;
+
+import com.quantmodel.engine.TaskEngine;
+import com.quantmodel.engine.SchedulerTask;
+
+import java.io.ByteArrayOutputStream;
+
+import java.util.Date;
+import java.util.TimerTask;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
+
+import org.dom4j.Node;
+
+import org.zeromq.ZMQ;
+
+import org.apache.log4j.Logger;
+
+public class Rollover extends SchedulerTask
+{
+    private static final Logger log = Logger.getLogger( Rollover.class );
+
+    public void init( Node node )
+        throws Exception
+    {
+        name = node.valueOf( "@name" );
+
+        //
+        //  <task name="Rollover" class="com.quantmodel.engine.task.Rollover" >
+        //      <iterator class="com.quantmodel.task.iterator.DailyIterator" hour="02" minute="00" second="00" tz="CST"/>
+        //  </task>
+        //
+
+        setScheduleIterator( node );
+        log.info( " next execution time: " + iterator.current() );
+    }
+
+    public void run()
+    {
+        log.info( "Rollover started!!!" );
+
+        try
+        {
+            ZMQ.Context ctx = ZMQ.context( 1 );
+            final ZMQ.Socket zmq = ctx.socket( ZMQ.REQ );
+            zmq.connect( TaskEngine.NETWORK_MAP.get( "dealing_callforward" ) );
+
+            final String msg = "<bdsq><DealingEngineRequest id=\"Rollover\" /></bdsq>";
+
+            final String response = doZMQ( msg, zmq );
+
+            log.info( response );
+
+            //
+            //  Cleanup our ZMQ Context.
+            //
+
+            ctx.term();
+        }
+        catch( Exception ex )
+        {
+            log.error( "Rollover error:", ex );
+        }
+
+        log.info( "Rollover complete." );
+    }
+}

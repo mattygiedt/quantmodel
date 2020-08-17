@@ -1,0 +1,30 @@
+<bdsq>
+    <procedure name="GET_FIX_ENGINE_BY_ACCOUNT_INSTRUMENT_ID" type="SELECT">
+        <input name="p_account_id" type="string" quote="false" />
+        <input name="p_instrument_id" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_account_id INT,
+                IN p_instrument_id INT
+            )
+            BEGIN
+
+                SELECT  session_id
+                FROM    fix_engine_session
+                WHERE   account_id = p_account_id
+                AND     instrument_id = p_instrument_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

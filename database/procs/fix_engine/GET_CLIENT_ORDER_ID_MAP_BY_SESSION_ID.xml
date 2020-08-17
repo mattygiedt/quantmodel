@@ -1,0 +1,27 @@
+<bdsq>
+    <procedure name="GET_CLIENT_ORDER_ID_MAP_BY_SESSION_ID" type="SELECT" >
+        <input name="p_session_id" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_session_id VARCHAR(64)
+            )
+            BEGIN
+
+                SELECT  *
+                FROM    client_order_id_map
+                WHERE   session_id = p_session_id
+                AND     is_active = 1
+                ORDER BY added_datetime;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

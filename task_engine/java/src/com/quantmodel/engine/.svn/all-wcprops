@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/bdsquant/!svn/ver/637/trunk/source/task_engine/java/src/com/quantmodel/engine
+END
+SchedulerTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/bdsquant/!svn/ver/637/trunk/source/task_engine/java/src/com/quantmodel/engine/SchedulerTask.java
+END
+ScheduleIterator.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/bdsquant/!svn/ver/397/trunk/source/task_engine/java/src/com/quantmodel/engine/ScheduleIterator.java
+END
+TaskEngine.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/bdsquant/!svn/ver/397/trunk/source/task_engine/java/src/com/quantmodel/engine/TaskEngine.java
+END
+Scheduler.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/bdsquant/!svn/ver/397/trunk/source/task_engine/java/src/com/quantmodel/engine/Scheduler.java
+END

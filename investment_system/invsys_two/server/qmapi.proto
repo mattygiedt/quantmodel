@@ -1,0 +1,68 @@
+package QMAPI;
+
+option cc_generic_services = false;
+option optimize_for = SPEED;
+
+message MarketDataBroadcast
+{
+    enum BroadcastType
+    {
+        BID_QUOTE = 0;
+        ASK_QUOTE = 1;
+        TRADE = 2;
+    }
+
+    enum UpdateAction
+    {
+        ADD = 0;
+        CHANGE = 1;
+        DELETE = 2;
+        OVERLAY = 5;
+    }
+
+    required string timestamp = 1;
+    required uint32 security_id = 2;
+    required BroadcastType broadcast_type = 3;
+    required UpdateAction update_action = 4;
+
+    //
+    //  values shared between limit entry / trade entry data
+    //
+
+    required int32 entry_size = 5 [default=0];
+    required int64 entry_price = 6 [default=0];
+
+    //
+    //  Additional limit entry data
+    //
+
+    optional uint32 orders = 7 [default=0];
+    optional uint32 price_level = 8 [default=0];
+}
+
+message CreateTradeRequest
+{
+    enum SideCode
+    {
+        BUY = 0;
+        SELL = 1;
+    }
+
+    enum TradeCondition
+    {
+        MARKET = 0;
+        LIMIT = 1;
+        STOP = 2;
+        STOP_LIMIT = 3;
+    }
+
+    required uint32 security_id = 1;
+    required string ext_order_id = 2;
+    required string investment_system_id = 3;
+    required string strategy_id = 4;
+    required SideCode side_code = 5;
+    required TradeCondition trade_condition = 6;
+    required uint32 signal_size = 7;
+    optional int64 limit_price = 8;
+    optional int64 stop_price = 9;
+}

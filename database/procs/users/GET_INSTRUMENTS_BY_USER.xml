@@ -1,0 +1,30 @@
+<bdsq>
+    <procedure name="GET_INSTRUMENTS_BY_USER" type="SELECT" >
+        <input name="p_user_id" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_user_id INT
+            )
+            BEGIN
+
+                SELECT  i.*
+                FROM    instrument i, user_instrument ui
+                WHERE   ui.user_id = p_user_id
+                AND     ui.instrument_id = i.instrument_id
+                AND     ui.instrument_type = i.instrument_type
+                ORDER BY i.instrument_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

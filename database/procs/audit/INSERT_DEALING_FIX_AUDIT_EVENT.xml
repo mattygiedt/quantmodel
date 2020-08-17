@@ -1,0 +1,69 @@
+<bdsq>
+    <procedure name="INSERT_DEALING_FIX_AUDIT_EVENT" type="UPDATE" >
+        <input name="p_request_id" type="string" quote="true" />
+        <input name="p_request_type" type="string" quote="true" />
+        <input name="p_request_ts" type="string" quote="true" />
+        <input name="p_response_id" type="string" quote="true" />
+        <input name="p_response_type" type="string" quote="true" />
+        <input name="p_response_ts" type="string" quote="true" />
+        <input name="p_error_msg" type="string" quote="true" />
+        <input name="p_fix_engine_id" type="string" quote="true" />
+        <input name="p_session_id" type="string" quote="true" />
+        <input name="p_added_datetime" type="string" quote="true" />
+        <input name="p_added_by" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_request_id VARCHAR(64),
+                IN p_request_type CHAR(32),
+                IN p_request_ts CHAR(17),
+                IN p_response_id CHAR(16),
+                IN p_response_type CHAR(16),
+                IN p_response_ts CHAR(17),
+                IN p_error_msg VARCHAR(255),
+                IN p_fix_engine_id VARCHAR(32),
+                IN p_session_id VARCHAR(64),
+                IN p_added_datetime CHAR(17),
+                IN p_added_by VARCHAR(20)
+            )
+            BEGIN
+
+                INSERT INTO dealing_audit(
+                    request_id,
+                    request_type,
+                    request_ts,
+                    response_id,
+                    response_type,
+                    response_ts,
+                    error_msg,
+                    fix_engine_id,
+                    session_id,
+                    added_datetime,
+                    added_by )
+                VALUES (
+                    p_request_id,
+                    p_request_type,
+                    p_request_ts,
+                    p_response_id,
+                    p_response_type,
+                    p_response_ts,
+                    p_error_msg,
+                    p_fix_engine_id,
+                    p_session_id,
+                    p_added_datetime,
+                    p_added_by );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

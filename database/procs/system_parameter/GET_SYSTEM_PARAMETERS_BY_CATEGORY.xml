@@ -1,0 +1,29 @@
+<bdsq>
+    <procedure name="GET_SYSTEM_PARAMETERS_BY_CATEGORY" type="SELECT" >
+        <input name="p_category" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS `SP_NAME`;
+
+            DELIMITER |
+
+            CREATE PROCEDURE `SP_NAME`(
+                IN p_category VARCHAR(64)
+            )
+            BEGIN
+
+                SELECT  parameter_id,
+                        category,
+                        name,
+                        value
+                FROM    system_parameter
+                WHERE   category = p_category
+                ORDER BY category, name;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

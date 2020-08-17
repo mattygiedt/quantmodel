@@ -1,0 +1,91 @@
+message CMEMarketData
+{
+    enum EntryType
+    {
+        BID = 0;
+        ASK = 1;
+        TRADE = 2;
+        OPENING_PRICE = 4;
+        SETTLEMENT_PRICE = 6;
+        TRADING_SESSION_HIGH_PRICE = 7;
+        TRADING_SESSION_LOW_PRICE = 8;
+        TRADE_VOLUME = 9;
+        OPEN_INTEREST = 10;
+        SIMULATED_SELL = 11;
+        SIMULATED_BUY = 12;
+        EMPTY_BOOK = 13;
+        PRIOR = 14;
+        SESSION_HIGH_BID = 15;
+        SESSION_LOW_OFFER = 16;
+        FIXING_PRICE = 17;
+        CASH_NOTE = 18;
+    }
+
+    enum UpdateAction
+    {
+        ADD = 0;
+        CHANGE = 1;
+        DELETE = 2;
+        OVERLAY = 5;
+    }
+
+    enum AggressorType
+    {
+        UNKNOWN = 0;
+        BUY = 1;
+        SELL = 2;
+    }
+
+    required uint64 sending_tm = 1;
+    required uint32 security_id = 2;
+    required UpdateAction update_action = 3;
+    required EntryType entry_type = 4;
+    required bool is_implied = 5;
+
+    //
+    //  values shared between limit entry / trade data
+    //
+
+    optional int32 entry_size = 6 [default=0];
+    optional string entry_px = 7 [default="0",deprecated=true]; // USE [ 12,13 ]
+
+    //
+    //  limit entry data
+    //
+
+    optional uint32 orders = 8 [default=0];
+    optional uint32 price_level = 9 [default=0];
+
+    //
+    //  trade entry data
+    //
+
+    optional uint32 entry_tm = 10 [default=0];
+    optional AggressorType aggressor = 11 [default=UNKNOWN];
+
+    //
+    //  Price data from QuickFIX::Decimal
+    //
+
+    optional int64 mantissa = 12 [default=0];
+    optional int32 exponent = 13 [default=0];
+}
+
+message FastEngineBroadcast
+{
+    enum BroadcastType
+    {
+        CME = 1;
+        ICE = 2;
+        CBOE = 3;
+    }
+
+    required string timestamp = 1;
+    required BroadcastType broadcast_type = 2;
+
+    //
+    //  Each fast market data type has it's own message array
+    //
+
+    repeated CMEMarketData cme_market_data = 3;
+}

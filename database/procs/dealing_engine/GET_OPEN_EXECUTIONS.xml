@@ -1,0 +1,26 @@
+<bdsq>
+    <procedure name="GET_OPEN_EXECUTIONS" type="SELECT" >
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+            )
+            BEGIN
+
+                SELECT  *
+                FROM    executions
+                WHERE   execution_status < 4
+                ORDER BY added_datetime;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

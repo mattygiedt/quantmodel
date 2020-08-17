@@ -1,0 +1,124 @@
+package fast_engine;
+
+option cc_generic_services = false;
+option optimize_for = SPEED;
+
+message CMEMarketDataEntry
+{
+    enum CMEEntryType
+    {
+        ENTRY_TYPE_BID = 48; //'0';
+        ENTRY_TYPE_ASK = 49; //'1';
+        ENTRY_TYPE_TRADE = 50; //'2';
+        ENTRY_TYPE_OPENING_PRICE = 52; //'4';
+        ENTRY_TYPE_SETTLEMENT_PRICE = 54; //'6';
+        ENTRY_TYPE_TRADING_SESSION_HIGH_PRICE = 55; //'7';
+        ENTRY_TYPE_TRADING_SESSION_LOW_PRICE = 56; //'8';
+        ENTRY_TYPE_TRADE_VOLUME = 66; //'B';
+        ENTRY_TYPE_OPEN_INTEREST = 67; //'C';
+        ENTRY_TYPE_SIMULATED_SELL = 69; //'E';
+        ENTRY_TYPE_SIMULATED_BUY = 70; //'F';
+        ENTRY_TYPE_EMPTY_BOOK = 74; //'J';
+        ENTRY_TYPE_PRIOR = 77; //'M';
+        ENTRY_TYPE_SESSION_HIGH_BID = 78; //'N';
+        ENTRY_TYPE_SESSION_LOW_OFFER = 79; //'O';
+        ENTRY_TYPE_FIXING_PRICE = 87; //'W';
+        ENTRY_TYPE_CASH_NOTE = 88; //'X';
+    }
+
+    enum CMEQuoteCondition
+    {
+        QUOTE_CONDITION_IMPLIED = 75; //'K';
+        QUOTE_CONDITION_LAST_BEST_PRICE = 67; //'C';
+    }
+
+    enum CMETradingSessionID
+    {
+        TRADING_SESSION_PRE_OPENING = 48; //'0';
+        TRADING_SESSION_OPENING = 49; //'1';
+        TRADING_SESSION_CONTINUOUS = 50; //'2';
+    }
+
+    enum CMETickDirection
+    {
+        TICK_DIRECTION_PLUS = 48; //'0';
+        TICK_DIRECTION_MINUS = 50; //'2';
+    }
+
+    enum CMETradeCondition
+    {
+        TRADE_CONDITION_OPENING_TRADE = 69; //'E';
+        TRADE_CONDITION_GLOBEX_PRICE = 49; //'1';
+    }
+
+    required uint32 MDUpdateAction = 1; // 279
+    optional uint32 MDPriceLevel = 2; // 1023
+    required CMEEntryType MDEntryType = 3; // 269
+    required uint32 SecurityIDSource = 4; // 22
+    required uint32 SecurityID = 5; // 48
+    required uint32 RptSeq = 6; // 83
+    optional CMEQuoteCondition QuoteCondition = 7; // 276
+    required int32 MDEntryPxExponent = 8; // 270
+    required int64 MDEntryPxMantissa = 9; // 270
+    optional uint32 NumberOfOrders = 10; // 346
+    required uint32 MDEntryTime = 11; // 273
+    optional int32 MDEntrySize = 12; // 271
+    optional CMETradingSessionID TradingSessionID = 13; // 336
+    optional int32 NetChgPrevDayExponent = 14; // 451
+    optional int64 NetChgPrevDayMantissa = 15; // 451
+    optional CMETickDirection TickDirection = 16; // 274
+    optional uint32 OpenCloseSettleFlag = 17; // 286
+    optional uint32 SettlDate = 18; // 64
+    optional uint32 TradeVolume = 19; // 1020
+    optional CMETradeCondition TradeCondition = 20; // 277
+    optional uint32 AggressorSide = 21; // 5797
+    optional uint32 MDQuoteType = 22; // 1070
+    optional uint32 TradeID = 23; // 1003
+}
+
+message CMEMarketDataProtobuf
+{
+    enum CMEStaticField
+    {
+        STATIC_FIELD_APPL_VER_ID = 1;
+        STATIC_FIELD_SENDER_COMP_ID = 2;
+    }
+
+    enum CMEMessageType
+    {
+        MESSAGE_TYPE_HEARTBEAT = 48; //'0';
+        MESSAGE_TYPE_LOGOUT = 53; //'5';
+        MESSAGE_TYPE_LOGON = 65; //'A';
+        MESSAGE_TYPE_NEWS = 66; //'B';
+        MESSAGE_TYPE_SECURITY_DEFINITION = 100; //'d';
+        MESSAGE_TYPE_SECURITY_STATUS = 102; //'f';
+        MESSAGE_TYPE_QUOTE_REQUEST = 82; //'R';
+        MESSAGE_TYPE_MARKET_DATA_REQUEST = 86; //'V';
+        MESSAGE_TYPE_MARKET_DATA_FULL_REFRESH = 87; //'W';
+        MESSAGE_TYPE_MARKET_DATA_INCREMENTAL_REFRESH = 88; //'X';
+        MESSAGE_TYPE_MARKET_DATA_REQUEST_REJECT = 89; //'Y';
+    }
+
+    enum CMEPosDupFlag
+    {
+        POSSIBLE_DUPLICATE = 89; //'Y';
+        ORIGINAL_TRANSMISSION = 78; //'N';
+    }
+
+    //
+    //  I'm currently removing these as I don't see the
+    //  point in keeping around a static field that we
+    //  don't use anyway. Comments welcome.
+    //
+    //  required CMEStaticField ApplVerID = 1; // 1128
+    //  required CMEStaticField SenderCompID = 3; // 49
+    //
+
+    required CMEMessageType MessageType = 1; // 35
+    required uint32 MsgSeqNum = 2; // 34
+    required uint64 SendingTime = 3; // 52
+    optional CMEPosDupFlag PosDupFlag = 4; // 43
+    required uint32 TradeDate = 5; // 75
+
+    repeated CMEMarketDataEntry MDEntries = 6;
+}

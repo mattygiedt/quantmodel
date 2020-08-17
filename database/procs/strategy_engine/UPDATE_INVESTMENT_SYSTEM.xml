@@ -1,0 +1,33 @@
+<bdsq>
+    <procedure name="UPDATE_INVESTMENT_SYSTEM" type="UPDATE" >
+        <input name="p_investment_system_id" type="string" quote="true" />
+        <input name="p_name" type="string" quote="true" />
+        <input name="p_is_active" type="string" quote="false" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_investment_system_id VARCHAR(16) ,
+                IN p_name VARCHAR(32) ,
+                IN p_is_active TINYINT
+            )
+            BEGIN
+
+                UPDATE investment_system
+                SET name = p_name,
+                    is_active = p_is_active
+                WHERE investment_system_id = p_investment_system_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+

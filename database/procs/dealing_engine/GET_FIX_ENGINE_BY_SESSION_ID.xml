@@ -1,0 +1,27 @@
+<bdsq>
+    <procedure name="GET_FIX_ENGINE_BY_SESSION_ID" type="SELECT" >
+        <input name="p_session_id" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_session_id VARCHAR(48)
+            )
+            BEGIN
+
+                SELECT  fix_engine_id
+                FROM    fix_engine_session
+                WHERE   session_id = p_session_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

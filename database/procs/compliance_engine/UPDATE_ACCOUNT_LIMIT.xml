@@ -1,0 +1,52 @@
+<bdsq>
+    <procedure name="UPDATE_ACCOUNT_LIMIT" type="UPDATE" >
+        <input name="p_account_id" type="string" quote="false" />
+        <input name="p_symbol" type="string" quote="true" />
+        <input name="p_security_exchange" type="string" quote="true" />
+        <input name="p_session_id" type="string" quote="true" />
+        <input name="p_max_open_long_qty" type="string" quote="false" />
+        <input name="p_max_open_short_qty" type="string" quote="false" />
+        <input name="p_max_release_qty" type="string" quote="false" />
+        <input name="p_is_active" type="string" quote="false" />
+        <input name="p_updated_datetime" type="string" quote="true" />
+        <input name="p_updated_by" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_account_id INT,
+                IN p_symbol VARCHAR(16),
+                IN p_security_exchange VARCHAR(16),
+                IN p_session_id VARCHAR(64),
+                IN p_max_open_long_qty INT,
+                IN p_max_open_short_qty INT,
+                IN p_max_release_qty INT,
+                IN p_is_active TINYINT,
+                IN p_updated_datetime CHAR(17),
+                IN p_updated_by VARCHAR(16)
+            )
+            BEGIN
+
+                UPDATE account_limit SET
+                    session_id = p_session_id,
+                    max_open_long_qty = p_max_open_long_qty,
+                    max_open_short_qty = p_max_open_short_qty,
+                    max_release_qty = p_max_release_qty,
+                    is_active = p_is_active,
+                    updated_datetime = p_updated_datetime,
+                    updated_by = p_updated_by
+                WHERE account_id = p_account_id
+                  AND symbol = p_symbol
+                  AND security_exchange = p_security_exchange;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

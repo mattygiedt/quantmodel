@@ -1,0 +1,26 @@
+<bdsq>
+    <procedure name="DELETE_USER_APPLICATION_BY_USER_ID" type="UPDATE" >
+        <input name="p_user_id" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_user_id INT
+            )
+            BEGIN
+
+                DELETE FROM user_application
+                WHERE user_id = p_user_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

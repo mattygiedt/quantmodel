@@ -1,0 +1,30 @@
+<bdsq>
+    <procedure name="UPDATE_PARAMETER" type="UPDATE" >
+        <input name="p_category" type="string" quote="true" />
+        <input name="p_name" type="string" quote="true" />
+        <input name="p_value" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS `SP_NAME`;
+
+            DELIMITER |
+
+            CREATE PROCEDURE `SP_NAME`(
+                IN  p_category VARCHAR(64),
+                IN  p_name VARCHAR(64),
+                IN  p_value VARCHAR(64)
+            )
+            BEGIN
+
+                UPDATE  system_parameter
+                SET     value = p_value
+                WHERE   category = p_category
+                    AND name = p_name;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

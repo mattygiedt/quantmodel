@@ -1,0 +1,18 @@
+<invsys_two>
+
+    <qmapi debug="true" >
+        <trade_socket trade_broadcast="tcp://127.0.0.1:20000" 
+                      trade_callforward="tcp://127.0.0.1:20001" />
+        <mktdata_socket security_id="187187" mktdata_broadcast="tcp://127.0.0.1:20002" />
+    </qmapi>
+
+    <params investment_system_id="INVSYS_TWO"
+            strategy_id="CL"
+            security_id="187187"
+            activate_height="25"
+            opening_tm="14:00"
+            closing_tm="20:00"
+            shutdown_tm="20:05"
+            multiplier="10" />
+
+</invsys_two>

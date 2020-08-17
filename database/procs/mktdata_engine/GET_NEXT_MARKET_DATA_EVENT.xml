@@ -1,0 +1,46 @@
+<bdsq>
+    <procedure name="GET_NEXT_MARKET_DATA_EVENT" type="SELECT" >
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_begdate" type="string" quote="true" />
+        <input name="p_enddate" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_instrument_id INT,
+                IN p_date CHAR(12)
+            )
+            BEGIN
+
+                DECLARE id INT DEFAULT 0;
+
+                SELECT MAX( market_data_event_id )
+                INTO id
+                FROM market_data_event;
+
+                SELECT  CASE WHEN market_data_event_id IS NULL
+                            THEN id
+                            ELSE market_data_event_id
+                        END
+                INTO    id
+                FROM    market_data_event
+                WHERE   event_datetime >= p_date
+                AND     instrument_id = p_instrument_id
+                ORDER BY market_data_event_id
+                LIMIT 1;
+
+                SELECT id as market_data_event_id;
+
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

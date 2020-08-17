@@ -1,0 +1,42 @@
+<bdsq>
+    <procedure name="INSERT_STRATEGY_CONFIGURATION" type="UPDATE" >
+        <input name="p_account_id" type="string" quote="false" />
+        <input name="p_strategy_id" type="string" quote="false" />
+        <input name="p_name" type="string" quote="true" />
+        <input name="p_value" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS `SP_NAME`;
+
+            DELIMITER |
+
+            CREATE PROCEDURE `SP_NAME`(
+                IN p_account_id INT,
+                IN p_strategy_id INT,
+                IN p_name VARCHAR(16),
+                IN p_value VARCHAR(32)
+            )
+            BEGIN
+
+                INSERT INTO strategy_configuration (
+                    account_id,
+                    strategy_id,
+                    name,
+                    value )
+                VALUES (
+                    p_account_id,
+                    p_strategy_id,
+                    p_name,
+                    p_value
+                );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

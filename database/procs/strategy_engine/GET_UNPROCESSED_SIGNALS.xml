@@ -1,0 +1,38 @@
+<bdsq>
+    <procedure name="GET_UNPROCESSED_SIGNALS" type="SELECT" >
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+            )
+            BEGIN
+
+                SELECT  ss.strategy_signal_id,
+                        ss.strategy_id,
+                        ss.request_id,
+                        ss.instrument_id,
+                        ss.instrument_name,
+                        ss.last_prc,
+                        ss.signal_qty,
+                        ss.signal_limit_prc,
+                        ss.is_suppressed,
+                        ss.is_processed,
+                        ss.added_datetime,
+                        ss.added_by,
+                        ss.updated_datetime,
+                        ss.updated_by
+                FROM    strategy_signal ss, strategy s
+                WHERE   ss.strategy_id = s.strategy_id
+                    AND ss.is_processed = 0
+                ORDER BY ss.added_datetime;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

@@ -1,0 +1,23 @@
+<bdsq>
+    <procedure name="GET_ACCOUNTS" type="SELECT" >
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS `SP_NAME`;
+
+            DELIMITER |
+
+            CREATE PROCEDURE `SP_NAME`(
+            )
+            BEGIN
+
+                SELECT  *
+                FROM    account
+                ORDER BY name;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

@@ -1,0 +1,38 @@
+<bdsq>
+    <procedure name="GET_OPEN_TRADESTATION_ORDERS2" type="SELECT" >
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_strategy_id" type="string" quote="true" />
+        <input name="p_open_close" type="string" quote="true" />
+        <input name="p_order_type" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_instrument_id INT,
+                IN p_strategy_id VARCHAR(32),
+                IN p_open_close VARCHAR(8),
+                IN p_order_type VARCHAR(8)
+            )
+            BEGIN
+
+                SELECT  *
+                FROM    tradestation_order
+                WHERE   is_open = 1
+                AND     instrument_id = p_instrument_id
+                AND     strategy_id = p_strategy_id
+                AND     open_close = p_open_close
+                AND     order_type = p_order_type
+                ORDER BY order_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+ 

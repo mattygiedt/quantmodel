@@ -1,0 +1,40 @@
+<bdsq>
+    <procedure name="INSERT_ACCOUNT_STRATEGY" type="UPDATE" >
+        <input name="p_account_id" type="string" quote="false" />
+        <input name="p_strategy_id" type="string" quote="false" />
+        <input name="p_weight" type="string" quote="false" />
+        <input name="p_is_enabled" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS `SP_NAME`;
+
+            DELIMITER |
+
+            CREATE PROCEDURE `SP_NAME`(
+                IN p_account_id INT,
+                IN p_strategy_id INT,
+                IN p_weight INT,
+                IN p_is_enabled TINYINT
+            )
+            BEGIN
+
+                INSERT INTO account_strategy (
+                    account_id,
+                    strategy_id,
+                    weight,
+                    is_enabled )
+                VALUES (
+                    p_account_id,
+                    p_strategy_id,
+                    p_weight,
+                    p_is_enabled );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

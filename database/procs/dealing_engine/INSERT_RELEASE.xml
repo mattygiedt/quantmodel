@@ -1,0 +1,130 @@
+<bdsq>
+    <procedure name="INSERT_RELEASE" type="UPDATE" >
+        <input name="p_id" type="string" quote="false" />
+        <input name="p_release_id" type="string" quote="true" />
+        <input name="p_session_id" type="string" quote="true" />
+        <input name="p_account_id" type="string" quote="false" />
+        <input name="p_order_id" type="string" quote="true" />
+        <input name="p_allocation_id" type="string" quote="true" />
+        <input name="p_investment_system_id" type="string" quote="true" />
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_compliance_audit_id" type="string" quote="true" />
+        <input name="p_client_order_id" type="string" quote="true" />
+        <input name="p_counterparty_order_id" type="string" quote="true" />
+        <input name="p_release_status" type="string" quote="false" />
+        <input name="p_release_type" type="string" quote="false" />
+        <input name="p_tif" type="string" quote="false" />
+        <input name="p_side_code" type="string" quote="false" />
+        <input name="p_release_qty" type="string" quote="true" />
+        <input name="p_limit_prc" type="string" quote="true" />
+        <input name="p_stop_prc" type="string" quote="true" />
+        <input name="p_average_prc" type="string" quote="true" />
+        <input name="p_executed_val" type="string" quote="true" />
+        <input name="p_executed_qty" type="string" quote="true" />
+        <input name="p_added_datetime" type="string" quote="true" />
+        <input name="p_added_by" type="string" quote="true" />
+        <input name="p_updated_datetime" type="string" quote="true" />
+        <input name="p_updated_by" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_id INT,
+                IN p_release_id VARCHAR(16),
+                IN p_session_id VARCHAR(64),
+                IN p_account_id INT,
+                IN p_order_id VARCHAR(16),
+                IN p_allocation_id VARCHAR(16),
+                IN p_investment_system_id VARCHAR(16),
+                IN p_instrument_id INT,
+                IN p_compliance_audit_id CHAR(16),
+                IN p_client_order_id CHAR(20),
+                IN p_counterparty_order_id VARCHAR(64),
+                IN p_release_status TINYINT,
+                IN p_release_type TINYINT,
+                IN p_tif TINYINT,
+                IN p_side_code TINYINT,
+                IN p_release_qty VARCHAR(30),
+                IN p_limit_prc VARCHAR(30),
+                IN p_stop_prc VARCHAR(30),
+                IN p_average_prc VARCHAR(30),
+                IN p_executed_val VARCHAR(30),
+                IN p_executed_qty VARCHAR(30),
+                IN p_added_datetime CHAR(20),
+                IN p_added_by VARCHAR(16),
+                IN p_updated_datetime CHAR(20),
+                IN p_updated_by VARCHAR(16)
+            )
+            BEGIN
+
+                CALL UPDATE_PARAMETER( 'DEALING_ENGINE', 'curr_release_id', p_id );
+
+                INSERT INTO releases (
+                    release_id,
+                    session_id,
+                    account_id,
+                    order_id,
+                    allocation_id,
+                    investment_system_id,
+                    instrument_id,
+                    compliance_audit_id,
+                    client_order_id,
+                    counterparty_order_id,
+                    release_status,
+                    release_type,
+                    tif,
+                    side_code,
+                    release_qty,
+                    limit_prc,
+                    stop_prc,
+                    average_prc,
+                    executed_val,
+                    executed_qty,
+                    added_datetime,
+                    added_by,
+                    updated_datetime,
+                    updated_by )
+                VALUES (
+                    p_release_id,
+                    p_session_id,
+                    p_account_id,
+                    p_order_id,
+                    p_allocation_id,
+                    p_investment_system_id,
+                    p_instrument_id,
+                    p_compliance_audit_id,
+                    p_client_order_id,
+                    p_counterparty_order_id,
+                    p_release_status,
+                    p_release_type,
+                    p_tif,
+                    p_side_code,
+                    p_release_qty,
+                    p_limit_prc,
+                    p_stop_prc,
+                    p_average_prc,
+                    p_executed_val,
+                    p_executed_qty,
+                    p_added_datetime,
+                    p_added_by,
+                    p_updated_datetime,
+                    p_updated_by );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+
+
+
+
+
+

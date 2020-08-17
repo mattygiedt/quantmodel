@@ -1,0 +1,131 @@
+<project default="all" basedir=".">
+
+	<!-- =================================================================== -->
+	<!-- Initialization target                                               -->
+	<!-- =================================================================== -->
+	<target name="init">
+	    <tstamp/>
+	    <echo message="----------- ${jar.dir}  ${Name} ${version} [${year}] being built with JDK ${ant.java.version} --- Building ${TargetName} --- JAR Files will be placed in ${TargetName} ---"/>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Global properties and referencable classpath                        -->
+	<!-- =================================================================== -->
+	<property name="Name"           value="QuantModel Java Build Utility"/>
+	<property name="version"        value="1"/>
+	<property name="year"           value="2010"/>
+	<property name="build.number"   value="1"/>
+
+    <property name="JARName"       value="task-engine-1.0.0"/>
+
+    <!-- Compiler Options -->
+    <property name="build.compiler" value="modern"/>
+	<property name="debug"          value="on"/>
+	<property name="deprecation"    value="on"/>
+	<property name="unchecked"      value="on"/>
+	<property name="verbose"        value="off"/>
+
+	<!-- Build Environment Directories -->
+	<property name="root.dir"       value="."/>
+	<property name="src.dir"        value="${root.dir}/src"/>
+	<property name="dev.dir"        value="../../../release/dev"/>
+	<property name="uat.dir"        value="../../../release/uat"/>
+	<property name="bin.dir"        value="${root.dir}/bin"/>
+	<property name="jar.dir"        value="${root.dir}/jar"/>
+	<property name="class.dir"      value="${root.dir}/classes"/>
+
+    <!-- Classpath -->
+	<path id="project.class.path">
+        <pathelement location="${jar.dir}/dom4j-1.6.1.jar" />
+        <pathelement location="${jar.dir}/memcached-2.3.1.jar" />
+        <pathelement location="${jar.dir}/jaxen-1.1.1.jar" />
+        <pathelement location="${jar.dir}/log4j-1.2.15.jar" />
+        <pathelement location="${jar.dir}/xpp3-1.1.4c.jar" />
+        <pathelement location="${jar.dir}/zmq.jar" />
+	</path>
+
+	<!-- This allows project.class.path to be referenced as a string
+	     like ${main.classpath} -->
+	<property name="main.classpath" refid="project.class.path"/>
+
+	<target name="all" depends="jar" />
+
+	<target name="deploy_dev" depends="" >
+        <delete file="${dev.dir}/task_engine/bin/${JARName}.jar" />
+        <copy todir="${dev.dir}/task_engine/bin" file="${JARName}.jar" />
+	</target>
+
+	<target name="deploy_uat" depends="" >
+        <delete file="${uat.dir}/task_engine/bin/${JARName}.jar" />
+        <copy todir="${uat.dir}/task_engine/bin" file="${JARName}.jar" />
+	</target>
+
+	<!-- =================================================================== -->
+    <!-- BUILDS THE JAR FILE                                                 -->
+	<!-- =================================================================== -->
+	<target name="jar" depends="compile">
+
+        <!-- delete the existing jar file -->
+        <delete file="${JARName}.jar" />
+
+        <!-- main class jar file -->
+        <jar file="${JARName}.jar" compress="false" >
+			<fileset dir="${class.dir}">
+			    <include name="**/*.class" />
+			    <include name="**/*.xsql" />
+			    <exclude name="**/*.java" />
+	            <exclude name="**/*.jar" />
+	            <exclude name="**/*.xml" />
+		    </fileset>
+        </jar>
+
+        <!--
+        <javah outputFile="${bin.dir}/activeset_jni.h" force="yes" classpath="${class.dir};${main.classpath}">
+            <class name="com.quantmodel.data.dealing.ActiveSet"/>
+        </javah>
+        -->
+
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Compiles the source directory                                       -->
+	<!-- =================================================================== -->
+	<target name="compile" depends="prepare-src">
+
+		<javac srcdir="${class.dir}"
+		       destdir="${class.dir}"
+		       listfiles="false"
+		       debug="${debug}"
+		       deprecation="${deprecation}"
+		       verbose="${verbose}"
+		>
+		       <classpath refid="project.class.path" />
+		       <!-- <compilerarg value="-Xlint" /> -->
+		</javac>
+
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Prepares the source code                                            -->
+	<!-- =================================================================== -->
+	<target name="prepare-src" depends="clean">
+
+		<!-- create directories -->
+		<mkdir dir="${class.dir}"/>
+
+		<copy todir="${class.dir}" >
+    		<fileset dir="${src.dir}">
+    		    <include name="**/*" />
+    		</fileset>
+		</copy>
+
+    </target>
+
+    <!-- =================================================================== -->
+	<!-- Clean targets                                                       -->
+	<!-- =================================================================== -->
+	<target name="clean">
+		<delete dir="${class.dir}" failonerror="true"/>
+	</target>
+
+</project>

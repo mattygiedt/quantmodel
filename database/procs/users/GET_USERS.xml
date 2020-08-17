@@ -1,0 +1,25 @@
+<bdsq>
+    <procedure name="GET_USERS" type="SELECT" >
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+            )
+            BEGIN
+
+                SELECT  *
+                FROM    user
+                ORDER BY user_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

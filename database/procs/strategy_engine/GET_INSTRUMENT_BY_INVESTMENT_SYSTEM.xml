@@ -1,0 +1,59 @@
+<bdsq>
+    <procedure name="GET_INSTRUMENT_BY_INVESTMENT_SYSTEM" type="SELECT" >
+        <input name="p_investment_system_id" type="string" quote="true" />
+        <input name="p_lookup_id" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_investment_system_id VARCHAR(16),
+                IN p_lookup_id VARCHAR(64)
+            )
+            BEGIN
+
+                DECLARE p_instrument_id_type_id VARCHAR(8);
+
+                --
+                --  Find the insrument id type
+                --
+
+                SELECT  instrument_id_type_id INTO p_instrument_id_type_id
+                FROM    instrument_lookup il
+                WHERE   investment_system_id = p_investment_system_id;
+
+                --
+                --  Based on the 'instrument id type', create a dynamic
+                --  select statement with the appropriate WHERE clause.
+                --
+
+                SELECT  i.*
+                FROM instrument i, investment_system_instrument isi
+                WHERE
+                    CASE p_instrument_id_type_id
+                       WHEN 'SECID' THEN i.security_id = p_lookup_id
+                       WHEN 'CUSIP' THEN i.cusip = p_lookup_id
+                       WHEN 'ISIN' THEN i.isin = p_lookup_id
+                       WHEN 'NAME' THEN i.name = p_lookup_id
+                       WHEN 'RIC' THEN i.ric = p_lookup_id
+                       WHEN 'SEDOL' THEN i.sedol = p_lookup_id
+                       WHEN 'SYMBOL' THEN i.symbol = p_lookup_id
+                       WHEN 'INSTR' THEN i.instrument_id = p_lookup_id
+                       ELSE 1=0
+                    END
+                AND isi.investment_system_id = p_investment_system_id
+                AND isi.instrument_id = i.instrument_id
+                AND i.is_active = 1
+                ORDER BY 1;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

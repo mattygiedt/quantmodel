@@ -1,0 +1,69 @@
+<bdsq>
+    <procedure name="INSERT_ACCOUNT_LIMIT" type="UPDATE" >
+        <input name="p_account_id" type="string" quote="false" />
+        <input name="p_symbol" type="string" quote="true" />
+        <input name="p_security_exchange" type="string" quote="true" />
+        <input name="p_session_id" type="string" quote="true" />
+        <input name="p_max_open_long_qty" type="string" quote="false" />
+        <input name="p_max_open_short_qty" type="string" quote="false" />
+        <input name="p_max_release_qty" type="string" quote="false" />
+        <input name="p_is_active" type="string" quote="false" />
+        <input name="p_added_datetime" type="string" quote="true" />
+        <input name="p_added_by" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_account_id INT,
+                IN p_symbol VARCHAR(16),
+                IN p_security_exchange VARCHAR(16),
+                IN p_session_id VARCHAR(64),
+                IN p_max_open_long_qty INT,
+                IN p_max_open_short_qty INT,
+                IN p_max_release_qty INT,
+                IN p_is_active TINYINT,
+                IN p_added_datetime CHAR(20),
+                IN p_added_by VARCHAR(16)
+            )
+            BEGIN
+
+                INSERT INTO account_limit (
+                    account_id,
+                    symbol,
+                    security_exchange,
+                    session_id,
+                    max_open_long_qty,
+                    max_open_short_qty,
+                    max_release_qty,
+                    is_active,
+                    added_datetime,
+                    added_by,
+                    updated_datetime,
+                    updated_by )
+                VALUES (
+                    p_account_id,
+                    p_symbol,
+                    p_security_exchange,
+                    p_session_id,
+                    p_max_open_long_qty,
+                    p_max_open_short_qty,
+                    p_max_release_qty,
+                    p_is_active,
+                    p_added_datetime,
+                    p_added_by,
+                    p_added_datetime,
+                    p_added_by );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

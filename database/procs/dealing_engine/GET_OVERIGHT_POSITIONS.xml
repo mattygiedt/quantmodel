@@ -1,0 +1,25 @@
+<bdsq>
+    <procedure name="GET_OVERNIGHT_POSITIONS" type="SELECT" >
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+            )
+            BEGIN
+
+                SELECT  *
+                FROM    position_overnight
+                WHERE   is_active = 1;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

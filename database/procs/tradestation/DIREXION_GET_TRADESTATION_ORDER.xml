@@ -1,0 +1,40 @@
+<bdsq>
+    <procedure name="DIREXION_GET_TRADESTATION_ORDER" type="SELECT" >
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_strategy_id" type="string" quote="true" />
+        <input name="p_order_type" type="string" quote="true" />
+        <input name="p_side" type="string" quote="true" />
+        <input name="p_price" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_instrument_id INT,
+                IN p_strategy_id VARCHAR(32),
+                IN p_order_type VARCHAR(8),
+                IN p_side VARCHAR(8),
+                IN p_price VARCHAR(16)
+            )
+            BEGIN
+
+                SELECT *
+                FROM tradestation_order
+                WHERE instrument_id = p_instrument_id
+                AND strategy_id = p_strategy_id
+                AND order_type = p_order_type
+                AND side = p_side
+                AND price = p_price
+                AND order_id != 'NULL'
+                ORDER BY tradestation_order_id desc;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+ 

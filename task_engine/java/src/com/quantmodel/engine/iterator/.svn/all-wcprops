@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/bdsquant/!svn/ver/397/trunk/source/task_engine/java/src/com/quantmodel/engine/iterator
+END
+OffsetIterator.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/bdsquant/!svn/ver/397/trunk/source/task_engine/java/src/com/quantmodel/engine/iterator/OffsetIterator.java
+END
+RestrictedDailyIterator.java
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/bdsquant/!svn/ver/397/trunk/source/task_engine/java/src/com/quantmodel/engine/iterator/RestrictedDailyIterator.java
+END
+ImmediateIterator.java
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/bdsquant/!svn/ver/397/trunk/source/task_engine/java/src/com/quantmodel/engine/iterator/ImmediateIterator.java
+END
+OneShotIterator.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/bdsquant/!svn/ver/397/trunk/source/task_engine/java/src/com/quantmodel/engine/iterator/OneShotIterator.java
+END
+WeeklyIterator.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/bdsquant/!svn/ver/397/trunk/source/task_engine/java/src/com/quantmodel/engine/iterator/WeeklyIterator.java
+END
+DailyIterator.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/bdsquant/!svn/ver/397/trunk/source/task_engine/java/src/com/quantmodel/engine/iterator/DailyIterator.java
+END

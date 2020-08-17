@@ -1,0 +1,34 @@
+<bdsq>
+    <procedure name="GET_STRATEGIES_BY_ACCOUNT" type="SELECT" >
+        <input name="p_account_id" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS `SP_NAME`;
+
+            DELIMITER |
+
+            CREATE PROCEDURE `SP_NAME`(
+                IN p_account_id INT
+            )
+            BEGIN
+
+                SELECT  s.strategy_id,
+                        s.investment_system_id,
+                        s.signal_id,
+                        s.name,
+                        s.is_active,
+                        a_s.weight,
+                        a_s.is_enabled
+                FROM    account_strategy a_s, strategy s
+                WHERE   a_s.account_id = p_account_id
+                    AND s.strategy_id = a_s.strategy_id
+                ORDER BY s.name, s.investment_system_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+ 

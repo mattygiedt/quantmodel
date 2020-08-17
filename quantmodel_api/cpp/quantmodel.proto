@@ -1,0 +1,910 @@
+package quantmodel;
+
+option cc_generic_services = false;
+option java_generic_services = false;
+option optimize_for = SPEED;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+message FixMarketData
+{
+    enum EntryType
+    {
+        BID = 1;
+        ASK = 2;
+        TRADE = 3;
+        UNKNOWN = 4;
+    }
+
+    optional string instrument_id = 1;
+    optional string sending_tm = 2;
+    optional EntryType entry_type = 3; // 269
+    optional string update_action = 4; // 279
+    optional string entry_px = 5 [default="0"]; // 270
+    optional string entry_size = 6 [default="0"]; // 271
+}
+
+message CMEMarketData
+{
+    enum EntryType
+    {
+        BID = 0;
+        ASK = 1;
+        TRADE = 2;
+        OPENING_PRICE = 4;
+        SETTLEMENT_PRICE = 6;
+        TRADING_SESSION_HIGH_PRICE = 7;
+        TRADING_SESSION_LOW_PRICE = 8;
+        TRADE_VOLUME = 9;
+        OPEN_INTEREST = 10;
+        SIMULATED_SELL = 11;
+        SIMULATED_BUY = 12;
+        EMPTY_BOOK = 13;
+        PRIOR = 14;
+        SESSION_HIGH_BID = 15;
+        SESSION_LOW_OFFER = 16;
+        FIXING_PRICE = 17;
+        CASH_NOTE = 18;
+    }
+
+    enum UpdateAction
+    {
+        ADD = 0;
+        CHANGE = 1;
+        DELETE = 2;
+        OVERLAY = 5;
+    }
+
+    enum AggressorType
+    {
+        UNKNOWN = 0;
+        BUY = 1;
+        SELL = 2;
+    }
+
+    required uint64 sending_tm = 1;
+    required uint32 security_id = 2;
+    required UpdateAction update_action = 3;
+    required EntryType entry_type = 4;
+    required bool is_implied = 5;
+
+    //
+    //  values shared between limit entry / trade data
+    //
+
+    optional int32 entry_size = 6 [default=0];
+    optional string entry_px = 7 [default="0",deprecated=true]; // USE [ 12,13 ]
+
+    //
+    //  limit entry data
+    //
+
+    optional uint32 orders = 8 [default=0];
+    optional uint32 price_level = 9 [default=0];
+
+    //
+    //  trade entry data
+    //
+
+    optional uint32 entry_tm = 10 [default=0];
+    optional AggressorType aggressor = 11 [default=UNKNOWN];
+
+    //
+    //  Price data from QuickFIX::Decimal
+    //
+
+    optional int64 mantissa = 12 [default=0];
+    optional int32 exponent = 13 [default=0];
+}
+
+message FastEngineBroadcast
+{
+    enum BroadcastType
+    {
+        CME = 1;
+        ICE = 2;
+        CBOE = 3;
+    }
+
+    required string timestamp = 1;
+    required BroadcastType broadcast_type = 2;
+
+    //
+    //  Each fast market data type has it's own message array
+    //
+
+    repeated CMEMarketData cme_market_data = 3;
+}
+
+message FixEngineBroadcast
+{
+    optional string timestamp = 1;
+    optional string instrument_id = 2;
+    repeated FixMarketData fix_market_data = 3;
+}
+
+message MarketDataPriceData
+{
+    optional string instrument_id = 1;
+    optional string last_prc = 2 [default="0.0"];
+}
+
+message MarketDataTradeData
+{
+    enum AggressorType
+    {
+        UNKNOWN = 0;
+        BUY = 1;
+        SELL = 2;
+    }
+
+    optional string instrument_id = 1;
+    optional AggressorType aggressor = 2 [default=UNKNOWN];
+    optional string trade_prc = 3 [default="0.0"];
+    optional int32 trade_qty = 4 [default=0];
+    optional uint32 entry_tm = 5;
+}
+
+message MarketDataQuoteData
+{
+    enum QuoteType
+    {
+        BID = 1;
+        ASK = 2;
+    }
+
+    optional string instrument_id = 1;
+    optional QuoteType type = 2;
+    optional string quote_prc = 3 [default="0.0"];
+    optional int32 quote_qty = 4 [default=0];
+    optional int32 level = 5 [default=0];
+}
+
+message MarketDataBroadcast
+{
+    enum BroadcastType
+    {
+        PRICE = 1;
+        TRADE = 2;
+        QUOTE = 3;
+    }
+
+    optional string broadcast_id = 1;
+    optional string timestamp = 2;
+    optional BroadcastType type = 3;
+    repeated MarketDataPriceData price_data = 5;
+    repeated MarketDataTradeData trade_data = 6;
+    repeated MarketDataQuoteData quote_data = 7;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+message HeartbeatData
+{
+    optional string heartbeat_id = 1;
+    optional string timestamp = 2;
+}
+
+message FixEngineData
+{
+    optional string fix_engine_id = 1;
+    optional string session_id = 2;
+}
+
+message SystemParameterData
+{
+    optional string parameter_id = 1;
+    optional string category = 2;
+    optional string name = 3;
+    optional string value = 4;
+}
+
+message PositionOvernightData
+{
+    enum PositionType
+    {
+        CLOSED = 0;
+        LONG = 1;
+        SHORT = 2;
+    }
+
+    optional string position_overnight_id = 1;
+    optional string account_id = 2;
+    optional string instrument_id = 3;
+    optional string investment_system_id = 4;
+    optional PositionType position_type = 5;
+    optional string open_pos = 6 [default="0"];
+    optional string open_prc = 7 [default="0"];
+    optional string is_active = 8;
+    optional string added_datetime = 9;
+    optional string added_by = 10;
+    optional string updated_datetime = 11;
+    optional string updated_by = 12;
+}
+
+message AccountLimitData
+{
+    optional string account_id = 1;
+    optional string symbol = 2;
+    optional string security_exchange = 3;
+
+    optional string session_id = 4;
+    optional string max_open_long_qty = 5 [default="0"];
+    optional string max_open_short_qty = 6 [default="0"];
+    optional string max_release_qty = 7 [default="0"];
+    optional string is_active = 8 [default="0"];
+
+    optional string added_datetime = 9;
+    optional string added_by = 10;
+    optional string updated_datetime = 11;
+    optional string updated_by = 12;
+}
+
+message DraftOrderData
+{
+    enum SideCode
+    {
+        BUY = 1;
+        SELL = 2;
+    }
+
+    enum OrderType
+    {
+        MARKET = 1;
+        LIMIT = 2;
+        STOP = 3;
+        STOP_LIMIT = 4;
+        MARKET_ON_CLOSE = 5;
+        MARKET_LIMIT = 6;
+    }
+
+    enum TimeInForce
+    {
+        DAY = 0;
+        GTC = 1;
+        OPG = 2;
+        IOC = 3;
+        FOK = 4;
+        GTD = 6;
+        GIS = 8;
+    }
+
+    optional string external_order_id = 1;
+    optional string investment_system_id = 2;
+    optional string instrument_id = 3;
+    optional SideCode side_code = 4;
+    optional TimeInForce tif = 5;
+    optional OrderType order_type = 6;
+    optional string order_qty = 7 [default="0"];
+    optional string limit_prc = 8 [default="0"];
+    optional string stop_prc = 9 [default="0"];
+}
+
+message DraftAllocationData
+{
+    optional string account_id = 1;
+    optional string allocation_qty = 2 [default="0"];
+}
+
+message AccountData
+{
+    optional string account_id = 1;
+    optional string parent_account_id = 2;
+    optional string name = 3;
+    optional string market_account_id = 4;
+    optional string custody_account_id = 5;
+    optional string giveup_account_id = 6;
+    optional string giveup_firm_id = 7;
+    optional string notional_val = 8;
+    optional string profit_target = 9;
+    optional string stop_loss = 10;
+    optional string signal_weight = 11;
+    optional string is_suppressed = 12;
+    optional string is_active = 13;
+    optional string contact_name = 14;
+    optional string contact_email = 15;
+    optional string contact_phone = 16;
+    optional string trading_firm_name = 17;
+    optional string trading_firm_email = 18;
+    optional string trading_firm_phone = 19;
+    optional string added_datetime = 20;
+    optional string added_by = 21;
+    optional string updated_datetime = 22;
+    optional string updated_by = 23;
+}
+
+message OrderData
+{
+    enum SideCode
+    {
+        BUY = 1;
+        SELL = 2;
+    }
+
+    enum OrderType
+    {
+        MARKET = 1;
+        LIMIT = 2;
+        STOP = 3;
+        STOP_LIMIT = 4;
+        MARKET_ON_CLOSE = 5;
+        MARKET_LIMIT = 6;
+    }
+
+    enum OrderStatus
+    {
+        SUPPRESSED = 0;
+        NEW = 1;
+        PENDING_RELEASE = 2;
+        RELEASED = 3;
+        PARTIALLY_FILLED = 4;
+        FILLED = 5;
+        CANCELED = 6;
+        CLOSED = 7;
+    };
+
+    enum TimeInForce
+    {
+        DAY = 0;
+        GTC = 1;
+        OPG = 2;
+        IOC = 3;
+        FOK = 4;
+        GTD = 6;
+        GIS = 8;
+    }
+
+    optional string order_id = 1;
+    optional string external_order_id = 2;
+    optional string investment_system_id = 3;
+    optional string order_type = 4;
+    optional string order_status = 5;
+    optional string instrument_id = 6;
+    optional string symbol = 7;
+    optional string tif = 8;
+    optional string side_code = 9;
+    optional string base_ccy = 10;
+    optional string order_qty = 11 [default="0"];
+    optional string open_qty = 12 [default="0"];
+    optional string released_qty = 13 [default="0"];
+    optional string executed_qty = 14 [default="0"];
+    optional string limit_prc = 15 [default="0"];
+    optional string stop_prc = 16 [default="0"];
+    optional string mark_prc = 17 [default="0"];
+    optional string average_prc = 18 [default="0"];
+    optional string entry_prc = 19 [default="0"];
+    optional string released_val = 20 [default="0"];
+    optional string executed_val = 21 [default="0"];
+    optional string added_datetime = 22;
+    optional string added_by = 23;
+    optional string updated_datetime = 24;
+    optional string updated_by = 25;
+}
+
+message AllocationData
+{
+    optional string allocation_id = 1;
+    optional string order_id = 2;
+    optional string account_id = 3;
+    optional string instrument_id = 4;
+    optional string side_code = 5;
+    optional string allocation_qty = 6 [default="0"];
+    optional string released_qty = 7 [default="0"];
+    optional string executed_qty = 8 [default="0"];
+    optional string executed_val = 9 [default="0"];
+    optional string average_prc = 10 [default="0"];
+    optional string added_datetime = 11;
+    optional string added_by = 12;
+    optional string updated_datetime = 13;
+    optional string updated_by = 14;
+}
+
+message ReleaseData
+{
+    optional string release_id = 1;
+    optional string session_id = 2;
+    optional string account_id = 3;
+    optional string order_id = 4;
+    optional string allocation_id = 5;
+    optional string investment_system_id = 6;
+    optional string instrument_id = 7;
+    optional string compliance_audit_id = 8;
+    optional string client_order_id = 9;
+    optional string counterparty_order_id = 10;
+    optional string release_status = 11;
+    optional string release_type = 12;
+    optional string tif = 13;
+    optional string side_code = 14;
+    optional string release_qty = 15 [default="0"];
+    optional string limit_prc = 16 [default="0"];
+    optional string stop_prc = 17 [default="0"];
+    optional string average_prc = 18 [default="0"];
+    optional string executed_val = 19 [default="0"];
+    optional string executed_qty = 20 [default="0"];
+    optional string added_datetime = 21;
+    optional string added_by = 22;
+    optional string updated_datetime = 23;
+    optional string updated_by = 24;
+}
+
+message ExecutionData
+{
+    optional string execution_id = 1;
+    optional string session_id = 2;
+    optional string account_id = 3;
+    optional string order_id = 4;
+    optional string release_id = 5;
+    optional string investment_system_id = 6;
+    optional string instrument_id = 7;
+    optional string client_order_id = 8;
+    optional string counterparty_execution_id = 9;
+    optional string side_code = 10;
+    optional string execution_ccy = 11;
+    optional string execution_status = 12;
+    optional string execution_prc = 13 [default="0"];
+    optional string execution_qty = 14 [default="0"];
+    optional string execution_val = 15 [default="0"];
+    optional string leaves_qty = 16 [default="0"];
+    optional string average_prc = 17 [default="0"];
+    optional string leg_type = 18 [default="1"];
+    optional string added_datetime = 19;
+    optional string added_by = 20;
+    optional string updated_datetime = 21;
+    optional string updated_by = 22;
+}
+
+message InstrumentData
+{
+    optional string instrument_id = 1;
+    optional string instrument_type = 2;
+    optional string name = 3;
+    optional string symbol = 4;
+    optional string cusip = 5;
+    optional string sedol = 6;
+    optional string isin = 7;
+    optional string ric = 8;
+    optional string cfi_code = 9;
+    optional string security_id = 10;
+    optional string security_type = 11;
+    optional string security_desc = 12;
+    optional string security_exchange = 13;
+    optional string maturity_month_year = 14;
+    optional string base_ccy = 15;
+    optional string last_prc = 16 [default="0"];
+    optional string mark_prc = 17 [default="0"];
+    optional string mark_datetime = 18;
+    optional string multiplier = 19;
+    optional string exchange_price_factor = 20;
+    optional string rollover_datetime = 21;
+    optional string is_active = 22;
+    optional string added_datetime = 23;
+    optional string added_by = 24;
+    optional string updated_datetime = 25;
+    optional string updated_by = 26;
+}
+
+message SignalData
+{
+    optional string external_order_id = 1;
+    optional string investment_system_id = 2;
+    optional string signal_id = 3;
+    optional string instrument_id = 4;
+    optional string side_code = 5;
+    optional string signal_qty = 6;
+    optional string order_type = 7;
+    optional string limit_prc = 8 [default="0"];
+    optional string stop_prc = 9 [default="0"];
+}
+
+message InvestmentSystemData
+{
+    optional string investment_system_id = 1;
+    optional string name = 2;
+    optional string is_active = 3;
+}
+
+message StrategyData
+{
+    optional string strategy_id = 1;
+    optional string investment_system_id = 2;
+    optional string signal_id = 3;
+    optional string name = 4;
+    optional string default_weight = 5;
+    optional string is_active = 6;
+}
+
+message AccountStrategyData
+{
+    optional string account_id = 1;
+    optional string strategy_id = 2;
+    optional string weight = 3;
+    optional string is_enabled = 4;
+}
+
+message ExecutionReportData
+{
+    optional string release_id = 1;
+    optional string session_id = 2;
+    optional string sending_tm = 3;
+
+    optional string ExecID = 4; // 17
+    optional string OrderID = 5; // 37
+    optional string ClOrdID = 6; // 11
+    optional string OrigClOrdID = 7; // 41
+    optional string ExecRefID = 8; // 19
+
+    optional string OrdType = 9; // 40
+    optional string ExecType = 10; // 150
+    optional string ExecTransType = 11; // 20
+    optional string MultiLegReportingType = 12 [default="1"]; // 442 defaults to 'outright'
+
+    optional string SecurityID = 13; // 48
+    optional string SecurityType = 14; // 167
+    optional string IDSource = 15; // 22
+
+    optional string Account = 16; // 1
+    optional string OrdStatus = 17; // 39
+    optional string Symbol = 18; // 55
+    optional string Side = 19; // 54
+    optional string TimeInForce = 20; // 59
+    optional string MaturityMonthYear = 21; // 200
+    optional string TransactTime = 22; // 60
+    optional string Text = 23; // 58
+
+    optional string CumQty = 24 [default="0"]; // 14
+    optional string OrderQty = 25 [default="0"]; // 38
+    optional string LeavesQty = 26 [default="0"]; // 151
+    optional string LastShares = 27 [default="0"]; // 32
+
+    optional string Price = 28 [default="0"]; // 44
+    optional string AvgPx = 29 [default="0"]; // 6
+    optional string LastPx = 30 [default="0"]; // 31
+    optional string StopPx = 31 [default="0"]; // 99
+}
+
+message DraftOrderMessage
+{
+    optional DraftOrderData draft_order_data = 1;
+    repeated DraftAllocationData draft_allocation_data = 2;
+}
+
+message OrderMessage
+{
+    optional OrderData order_data = 1;
+    repeated AllocationData allocation_data = 2;
+    repeated ReleaseData release_data = 3;
+    repeated ExecutionData execution_data = 4;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+message DatabaseEngineRequest
+{
+    enum QueryType
+    {
+        SELECT = 1;
+        UPDATE = 2;
+    }
+
+    message Query
+    {
+        optional QueryType type = 1;
+        optional string query_id = 2;
+        optional string query_str = 3;
+    }
+
+    optional string request_id = 1;
+    optional string timestamp = 2;
+    repeated Query query = 3;
+}
+
+message DatabaseEngineResponse
+{
+    message ResultSet
+    {
+        message Row
+        {
+            message Column
+            {
+                optional int32 column_id = 1;
+                optional string name = 2;
+                optional string value = 3;
+            }
+
+            optional int32 row_id = 1;
+            repeated Column column = 2;
+        }
+
+        optional string query_id = 1;
+        repeated Row row = 2;
+    }
+
+    optional string response_id = 1;
+    optional string request_id = 2;
+    optional string timestamp = 3;
+    repeated ResultSet result_set = 4;
+}
+
+message DealingEngineRequest
+{
+    enum RequestType
+    {
+        EXECUTE_SIGNAL = 1;
+        EXECUTE_DRAFT_ORDER = 2;
+        CREATE_DRAFT_ORDER = 3;
+        CREATE_ORDER = 4;
+        UPDATE_ORDER = 5;
+        CANCEL_ORDER = 6;
+        RELEASE_ORDER = 7;
+        CREATE_RELEASE = 8;
+        VALIDATE_RELEASE = 9;
+        CANCEL_RELEASE =  10;
+        REPLACE_RELEASE = 11;
+        RELEASE_REJECTED = 12;
+        CANCEL_REJECTED = 13;
+        RELEASE_RESTATED = 14;
+        RELEASE_CANCELED = 15;
+        RELEASE_REPLACED = 16;
+        CREATE_EXECUTION = 17;
+        EXECUTION_CANCELED = 18;
+        BROADCAST_DATA = 19;
+        ACTIVE_SET = 20;
+        QUERY_ORDER = 21;
+        QUERY_RELEASE = 22;
+        QUERY_EXECUTION = 23;
+        ROLLOVER = 24;
+        CURRENT_STATUS = 25;
+        UPDATE_STATUS = 26;
+        MARKETDATA_SUBSCRIBE = 27;
+        MARKETDATA_UNSUBSCRIBE = 28;
+        FIXENGINE_LOGIN = 29;
+        FIXENGINE_LOGOUT = 30;
+        LOGOUT_FIXENGINE = 31;
+        LOGIN_FIXENGINE = 32;
+        RELOAD_STATIC_DATA = 33;
+        SHUTDOWN = 34;
+    }
+
+    optional string request_id = 1;
+    optional string timestamp = 2;
+    optional RequestType type = 3;
+
+    optional DraftOrderMessage draft_order = 4;
+    optional OrderMessage order = 5;
+    optional ExecutionReportData execution_report_data = 6;
+    optional FixEngineData fix_engine_data = 7;
+    repeated InstrumentData instrument_data = 8;
+    repeated AccountData account_data = 9;
+    repeated InvestmentSystemData investment_system_data = 10;
+    repeated SignalData signal_data = 11;
+    optional SystemParameterData system_parameter_data = 12;
+}
+
+message DealingEngineResponse
+{
+    enum ResponseType
+    {
+        ACKNOWLEDGEMENT = 1;
+        REJECT = 2;
+        ERROR = 3;
+    }
+
+    optional string response_id = 1;
+    optional string request_id = 2;
+    optional string timestamp = 3;
+    optional ResponseType type = 4;
+    optional string error_msg = 5;
+
+    repeated DraftOrderMessage draft_order = 6;
+    repeated OrderMessage order = 7;
+    repeated PositionOvernightData position = 8;
+    repeated SystemParameterData system_parameter = 9;
+    optional AccountLimitData account_limit = 10;
+}
+
+message DealingEngineBroadcast
+{
+    enum BroadcastType
+    {
+        EXECUTE_SIGNAL = 1;
+        EXECUTE_DRAFT_ORDER = 2;
+        CREATE_DRAFT_ORDER = 3;
+        CREATE_ORDER = 4;
+        UPDATE_ORDER = 5;
+        CANCEL_ORDER = 6;
+        RELEASE_ORDER = 7;
+        CREATE_RELEASE = 8;
+        VALIDATE_RELEASE = 9;
+        CANCEL_RELEASE =  10;
+        REPLACE_RELEASE = 11;
+        RELEASE_REJECTED = 12;
+        CANCEL_REJECTED = 13;
+        RELEASE_RESTATED = 14;
+        RELEASE_CANCELED = 15;
+        RELEASE_REPLACED = 16;
+        CREATE_EXECUTION = 17;
+        EXECUTION_CANCELED = 18;
+        BROADCAST_DATA = 19;
+        ACTIVE_SET = 20;
+        QUERY_ORDER = 21;
+        QUERY_RELEASE = 22;
+        QUERY_EXECUTION = 23;
+        ROLLOVER = 24;
+        CURRENT_STATUS = 25;
+        UPDATE_STATUS = 26;
+        MARKETDATA_SUBSCRIBE = 27;
+        MARKETDATA_UNSUBSCRIBE = 28;
+        FIXENGINE_LOGIN = 29;
+        FIXENGINE_LOGOUT = 30;
+        LOGOUT_FIXENGINE = 31;
+        LOGIN_FIXENGINE = 32;
+        RELOAD_STATIC_DATA = 33;
+        SHUTDOWN = 34;
+    }
+
+    optional string broadcast_id = 1;
+    optional BroadcastType type = 2;
+    optional string timestamp = 3;
+
+    repeated OrderMessage order = 4;
+    repeated FixEngineData fix_engine_data = 5;
+    repeated PositionOvernightData position = 6;
+    repeated SystemParameterData system_parameter = 7;
+}
+
+message FixEngineRequest
+{
+    enum RequestType
+    {
+        CREATE_RELEASE = 1;
+        CANCEL_RELEASE = 2;
+        REPLACE_RELEASE = 3;
+        DEFINE_SECURITY = 4;
+        MARKETDATA_SUBSCRIBE = 5;
+        FIXENGINE_LOGOUT = 6;
+        FIXENGINE_LOGIN = 7;
+        SEQUENCE_RESET = 8;
+        RESEND_REQUEST = 9;
+        TEST_REQUEST = 10;
+        SHUTDOWN = 11;
+    }
+
+    optional string request_id = 1;
+    optional string timestamp = 2;
+    optional RequestType type = 3;
+    optional string session_id = 4;
+
+    optional ReleaseData release_data = 5;
+    optional InstrumentData instrument_data = 6;
+    optional AccountData account_data = 7;
+}
+
+message FixEngineResponse
+{
+    enum ResponseType
+    {
+        ACKNOWLEDGEMENT = 1;
+        REJECT = 2;
+        ERROR = 3;
+    }
+
+    optional string response_id = 1;
+    optional string request_id = 2;
+    optional string timestamp = 3;
+    optional ResponseType type = 4;
+    optional string error_msg = 5;
+}
+
+message ClientAdapterRequest
+{
+    enum RequestType
+    {
+        HEARTBEAT = 1;
+        DATABASE = 2;
+        DEALING = 3;
+        SHUTDOWN = 4;
+    }
+
+    optional string request_id = 1;
+    optional string session_id = 2;
+    optional string timestamp = 3;
+    optional RequestType type = 4;
+
+    optional DealingEngineRequest dealing_request = 5;
+    optional DatabaseEngineRequest database_request = 6;
+}
+
+message ClientAdapterResponse
+{
+    enum ResponseType
+    {
+        ACKNOWLEDGEMENT = 1;
+        REJECT = 2;
+        ERROR = 3;
+    }
+
+    optional string response_id = 1;
+    optional string request_id = 2;
+    optional string session_id = 3;
+    optional string timestamp = 4;
+    optional ResponseType type = 5;
+    optional string error_msg = 6;
+
+    optional DealingEngineResponse dealing_response = 7;
+    optional DatabaseEngineResponse database_response = 8;
+}
+
+message ClientAdapterBroadcast
+{
+    enum BroadcastType
+    {
+        HEARTBEAT = 1;
+        DATABASE = 2;
+        DEALING = 3;
+        MARKETDATA = 4;
+        SHUTDOWN = 5;
+    }
+
+    optional string broadcast_id = 1;
+    optional string timestamp = 2;
+    optional BroadcastType type = 3;
+
+    optional DealingEngineBroadcast dealing_broadcast = 4;
+    optional MarketDataBroadcast marketdata_broadcast = 5;
+    optional HeartbeatData heartbeat_data = 6;
+}
+
+message InvestmentSystemRequest
+{
+    enum RequestType
+    {
+        HEARTBEAT = 1;
+        COMMAND = 2;
+    }
+
+    optional string request_id = 1;
+    optional string session_id = 2;
+    optional string timestamp = 3;
+    optional RequestType type = 4;
+    optional string delegate = 5;
+}
+
+message InvestmentSystemResponse
+{
+    enum ResponseType
+    {
+        ACKNOWLEDGEMENT = 1;
+        REJECT = 2;
+        ERROR = 3;
+    }
+
+    optional string response_id = 1;
+    optional string request_id = 2;
+    optional string timestamp = 3;
+    optional ResponseType type = 4;
+    optional string error_msg = 5;
+    optional string session_id = 6;
+    optional bytes delegate = 7;
+}
+
+message InvestmentSystemBroadcast
+{
+    enum BroadcastType
+    {
+        PRICE = 1;
+        TRADE = 2;
+        DATA = 3;
+        HEARTBEAT = 4;
+    }
+
+    optional string broadcast_id = 1;
+    optional string timestamp = 2;
+    optional BroadcastType type = 3;
+    optional bytes delegate = 4;
+}

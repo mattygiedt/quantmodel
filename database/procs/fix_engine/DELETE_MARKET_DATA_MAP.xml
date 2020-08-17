@@ -1,0 +1,31 @@
+<bdsq>
+    <procedure name="DELETE_MARKET_DATA_MAP" type="UPDATE" >
+        <input name="p_market_data_map_id" type="string" quote="true" />
+        <input name="p_updated_datetime" type="string" quote="true" />
+        <input name="p_updated_by" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_market_data_map_id CHAR(20),
+                IN p_updated_datetime CHAR(20),
+                IN p_updated_by VARCHAR(16)
+            )
+            BEGIN
+
+                UPDATE  market_data_map
+                    SET is_active = 0,
+                        updated_datetime = p_updated_datetime,
+                        updated_by = p_updated_by
+                WHERE   market_data_map_id = p_market_data_map_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

@@ -1,0 +1,117 @@
+<bdsq>
+    <procedure name="INSERT_TRADESTATION_ORDER" type="SELECT" >
+        <input name="p_strategy_id" type="string" quote="true" />
+        <input name="p_order_data" type="string" quote="true" />
+        <input name="p_order_status" type="string" quote="true" />
+        <input name="p_order_type" type="string" quote="true" />
+        <input name="p_open_close" type="string" quote="true" />
+        <input name="p_signal" type="string" quote="true" />
+        <input name="p_timestamp" type="string" quote="true" />
+        <input name="p_side" type="string" quote="true" />
+        <input name="p_quantity" type="string" quote="true" />
+        <input name="p_symbol" type="string" quote="true" />
+        <input name="p_price" type="string" quote="true" />
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_instrument_name" type="string" quote="true" />
+        <input name="p_signal_quantity" type="string" quote="true" />
+        <input name="p_signal_price" type="string" quote="true" />
+        <input name="p_expiration_dt" type="string" quote="true" />
+        <input name="p_is_executed" type="string" quote="false" />
+        <input name="p_is_open" type="string" quote="false" />
+        <input name="p_added_datetime" type="string" quote="true" />
+        <input name="p_added_by" type="string" quote="true" />
+        <input name="p_updated_datetime" type="string" quote="true" />
+        <input name="p_updated_by" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_strategy_id VARCHAR(32),
+                IN p_order_data VARCHAR(64),
+                IN p_order_status VARCHAR(16),
+                IN p_order_type VARCHAR(8),
+                IN p_open_close VARCHAR(8),
+                IN p_signal VARCHAR(32),
+                IN p_timestamp VARCHAR(24),
+                IN p_side VARCHAR(8),
+                IN p_quantity VARCHAR(8),
+                IN p_symbol VARCHAR(8),
+                IN p_price VARCHAR(16),
+                IN p_instrument_id INT,
+                IN p_instrument_name VARCHAR(64),
+                IN p_signal_quantity VARCHAR(30),
+                IN p_signal_price VARCHAR(30),
+                IN p_expiration_dt CHAR(12),
+                IN p_is_executed TINYINT,
+                IN p_is_open TINYINT,
+                IN p_added_datetime CHAR(20),
+                IN p_added_by VARCHAR(16),
+                IN p_updated_datetime CHAR(20),
+                IN p_updated_by VARCHAR(16)
+            )
+            BEGIN
+
+                INSERT INTO tradestation_order (
+                    strategy_id,
+                    order_data,
+                    order_status,
+                    order_type,
+                    open_close,
+                    signal,
+                    timestamp,
+                    side,
+                    quantity,
+                    symbol,
+                    price,
+                    instrument_id,
+                    instrument_name,
+                    signal_quantity,
+                    signal_price,
+                    expiration_dt,
+                    is_executed,
+                    is_open,
+                    added_datetime,
+                    added_by,
+                    updated_datetime,
+                    updated_by )
+                VALUES (
+                    p_strategy_id,
+                    p_order_data,
+                    p_order_status,
+                    p_order_type,
+                    p_open_close,
+                    p_signal,
+                    p_timestamp,
+                    p_side,
+                    p_quantity,
+                    p_symbol,
+                    p_price,
+                    p_instrument_id,
+                    p_instrument_name,
+                    p_signal_quantity,
+                    p_signal_price,
+                    p_expiration_dt,
+                    p_is_executed,
+                    p_is_open,
+                    p_added_datetime,
+                    p_added_by,
+                    p_updated_datetime,
+                    p_updated_by );
+
+                SELECT * FROM tradestation_order WHERE tradestation_order_id = @@IDENTITY;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+
+
+                    

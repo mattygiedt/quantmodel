@@ -1,0 +1,41 @@
+<bdsq>
+    <procedure name="UPDATE_USER" type="UPDATE" >
+        <input name="p_user_id" type="string" quote="false" />
+        <input name="p_username" type="string" quote="true" />
+        <input name="p_password" type="string" quote="true" />
+        <input name="p_firstname" type="string" quote="true" />
+        <input name="p_lastname" type="string" quote="true" />
+        <input name="p_is_active" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_user_id INT,
+                IN p_username VARCHAR(32),
+                IN p_password VARCHAR(32),
+                IN p_firstname VARCHAR(64),
+                IN p_lastname VARCHAR(64),
+                IN p_is_active TINYINT
+            )
+            BEGIN
+
+                UPDATE user
+                SET username = p_username,
+                    password = p_password,
+                    firstname = p_firstname,
+                    lastname = p_lastname,
+                    is_active = p_is_active
+                WHERE user_id = p_user_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

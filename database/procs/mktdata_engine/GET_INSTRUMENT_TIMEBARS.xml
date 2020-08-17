@@ -1,0 +1,93 @@
+<bdsq>
+    <procedure name="GET_INSTRUMENT_TIMEBARS" type="SELECT" >
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_timestep" type="string" quote="false" />
+        <input name="p_start" type="string" quote="true" />
+        <input name="p_stop" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_instrument_id INT,
+                IN p_timestep INT,
+                IN p_start CHAR(12),
+                IN p_stop CHAR(12)
+            )
+            BEGIN
+
+                DECLARE p_beg_tm CHAR(12);
+                DECLARE p_end_tm CHAR(12);
+                DECLARE p_beg_datetime DATETIME;
+                DECLARE p_end_datetime DATETIME;
+                DECLARE p_open_prc VARCHAR(30);
+                DECLARE p_close_prc VARCHAR(30);
+
+                SET p_beg_datetime = STR_TO_DATE( p_start, '%Y%m%d%H%i' );
+                SET p_end_datetime = STR_TO_DATE( p_stop, '%Y%m%d%H%i' );
+
+                DELETE FROM agg_market_data_event;
+
+                WHILE ( TIMESTAMPDIFF( MINUTE, p_beg_datetime, p_end_datetime ) > 0 ) DO
+
+                    SET p_beg_tm = DATE_FORMAT( p_beg_datetime, '%Y%m%d%H%i' );
+                    SET p_beg_datetime = DATE_ADD( p_beg_datetime, INTERVAL p_timestep MINUTE );
+                    SET p_end_tm = DATE_FORMAT( p_beg_datetime, '%Y%m%d%H%i' );
+
+                    SET p_open_prc = 0.0;
+                    SET p_close_prc = 0.0;
+
+                    SELECT  event_prc INTO p_open_prc
+                    FROM    market_data_event
+                    WHERE   market_data_event_id =
+                        ( SELECT MIN( market_data_event_id )
+                          FROM  market_data_event
+                          WHERE instrument_id = p_instrument_id
+                          AND   event_datetime BETWEEN p_beg_tm AND p_end_tm );
+
+                    SELECT  event_prc INTO p_close_prc
+                    FROM    market_data_event
+                    WHERE   market_data_event_id =
+                        ( SELECT MAX( market_data_event_id )
+                          FROM  market_data_event
+                          WHERE instrument_id = p_instrument_id
+                          AND   event_datetime BETWEEN p_beg_tm AND p_end_tm );
+
+                    INSERT INTO agg_market_data_event (
+                        event_qty,
+                        event_val,
+                        min_event_prc,
+                        max_event_prc,
+                        open_prc,
+                        close_prc,
+                        beg_tm,
+                        end_tm )
+                    SELECT  IFNULL( SUM( event_qty ), 0 ) as event_qty,
+                            IFNULL( SUM( event_prc * event_qty ), 0 ) as event_val,
+                            IFNULL( MIN( event_prc ), 0 ) as min_event_prc,
+                            IFNULL( MAX( event_prc ), 0 ) as max_event_prc,
+                            p_open_prc,
+                            p_close_prc,
+                            p_beg_tm as beg_tm,
+                            p_end_tm as end_tm
+                    FROM    market_data_event
+                    WHERE   instrument_id = p_instrument_id
+                    AND     event_datetime BETWEEN p_beg_tm AND p_end_tm;
+
+
+
+                END WHILE;
+
+                SELECT * FROM agg_market_data_event;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

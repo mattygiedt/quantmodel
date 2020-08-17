@@ -1,0 +1,27 @@
+<bdsq>
+    <procedure name="GET_INSTRUMENT_SYMBOLS" type="SELECT" >
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+            )
+            BEGIN
+
+                SELECT  symbol
+                FROM    instrument
+                WHERE   is_active = 1
+                GROUP BY symbol
+                ORDER BY symbol;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

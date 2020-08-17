@@ -1,0 +1,57 @@
+<bdsq>
+    <procedure name="INSERT_AUDIT_EVENT" type="UPDATE" >
+        <input name="p_order_id" type="string" quote="true" />
+        <input name="p_element_id" type="string" quote="true" />
+        <input name="p_element_type" type="string" quote="true" />
+        <input name="p_audit_desc" type="string" quote="true" />
+        <input name="p_added_datetime" type="string" quote="true" />
+        <input name="p_added_by" type="string" quote="true" />
+        <input name="p_updated_datetime" type="string" quote="true" />
+        <input name="p_updated_by" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_order_id VARCHAR(16),
+                IN p_element_id VARCHAR(16),
+                IN p_element_type CHAR(1),
+                IN p_audit_desc VARCHAR(256),
+                IN p_added_datetime CHAR(20),
+                IN p_added_by VARCHAR(16),
+                IN p_updated_datetime CHAR(20),
+                IN p_updated_by VARCHAR(16)
+            )
+            BEGIN
+
+                INSERT INTO audit_event(
+                    order_id,
+                    element_id,
+                    element_type,
+                    audit_desc,
+                    added_datetime,
+                    added_by,
+                    updated_datetime,
+                    updated_by )
+                VALUES (
+                    p_order_id,
+                    p_element_id,
+                    p_element_type,
+                    p_audit_desc,
+                    p_added_datetime,
+                    p_added_by,
+                    p_updated_datetime,
+                    p_updated_by );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

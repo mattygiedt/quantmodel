@@ -1,0 +1,42 @@
+<bdsq>
+    <procedure name="INSERT_USER" type="UPDATE" >
+        <input name="p_username" type="string" quote="true" />
+        <input name="p_password" type="string" quote="true" />
+        <input name="p_firstname" type="string" quote="true" />
+        <input name="p_lastname" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_username VARCHAR(32),
+                IN p_password VARCHAR(32),
+                IN p_firstname VARCHAR(64),
+                IN p_lastname VARCHAR(64)
+            )
+            BEGIN
+
+                INSERT INTO user (
+                    username,
+                    password,
+                    firstname,
+                    lastname,
+                    is_active )
+                VALUES (
+                    p_username,
+                    p_password,
+                    p_firstname,
+                    p_lastname,
+                    0 );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

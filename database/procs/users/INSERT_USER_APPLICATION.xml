@@ -1,0 +1,32 @@
+<bdsq>
+    <procedure name="INSERT_USER_APPLICATION" type="UPDATE" >
+        <input name="p_user_id" type="string" quote="false" />
+        <input name="p_application_id" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_user_id INT ,
+                IN p_application_id CHAR(8)
+            )
+            BEGIN
+
+                INSERT INTO user_application (
+                    user_id,
+                    application_id
+                ) VALUES (
+                    p_user_id,
+                    p_application_id );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

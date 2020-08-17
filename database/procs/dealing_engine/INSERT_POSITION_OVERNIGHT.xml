@@ -1,0 +1,60 @@
+<bdsq>
+    <procedure name="INSERT_POSITION_OVERNIGHT" type="UPDATE" >
+        <input name="p_account_id" type="string" quote="false" />
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_investment_system_id" type="string" quote="true" />
+        <input name="p_position_type" type="string" quote="false" />
+        <input name="p_open_pos" type="string" quote="true" />
+        <input name="p_open_prc" type="string" quote="true" />
+        <input name="p_added_datetime" type="string" quote="true" />
+        <input name="p_added_by" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_account_id INT,
+                IN p_instrument_id INT,
+                IN p_investment_system_id VARCHAR(16),
+                IN p_position_type TINYINT,
+                IN p_open_pos VARCHAR(30),
+                IN p_open_prc VARCHAR(30),
+                IN p_added_datetime CHAR(20),
+                IN p_added_by VARCHAR(16)
+            )
+            BEGIN
+
+                INSERT INTO position_overnight (
+                    account_id,
+                    instrument_id,
+                    investment_system_id,
+                    position_type,
+                    open_pos,
+                    open_prc,
+                    is_active,
+                    added_datetime,
+                    added_by,
+                    updated_datetime,
+                    updated_by )
+                VALUES (
+                    p_account_id,
+                    p_instrument_id,
+                    p_investment_system_id,
+                    p_position_type,
+                    p_open_pos,
+                    p_open_prc,
+                    1,
+                    p_added_datetime,
+                    p_added_by,
+                    p_added_datetime,
+                    p_added_by );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

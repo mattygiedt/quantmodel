@@ -1,0 +1,28 @@
+<bdsq>
+    <procedure name="GET_APPLICATIONS_BY_USER" type="SELECT" >
+        <input name="p_user_id" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_user_id INT
+            )
+            BEGIN
+
+                SELECT  application_id
+                FROM    user_application
+                WHERE   user_id = p_user_id
+                ORDER BY application_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

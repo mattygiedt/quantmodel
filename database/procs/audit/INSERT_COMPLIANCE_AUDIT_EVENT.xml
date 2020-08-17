@@ -1,0 +1,101 @@
+<bdsq>
+    <procedure name="INSERT_COMPLIANCE_AUDIT_EVENT" type="UPDATE" >
+        <input name="p_compliance_audit_id" type="string" quote="false" />
+        <input name="p_session_id" type="string" quote="true" />
+        <input name="p_account_id" type="string" quote="false" />
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_order_id" type="string" quote="true" />
+        <input name="p_allocation_id" type="string" quote="true" />
+        <input name="p_release_id" type="string" quote="true" />
+        <input name="p_side_code" type="string" quote="false" />
+        <input name="p_release_qty" type="string" quote="true" />
+        <input name="p_worst_case_long_qty" type="string" quote="false" />
+        <input name="p_worst_case_short_qty" type="string" quote="false" />
+        <input name="p_curr_open_long_qty" type="string" quote="false" />
+        <input name="p_curr_open_short_qty" type="string" quote="false" />
+        <input name="p_max_open_long_qty" type="string" quote="false" />
+        <input name="p_max_open_short_qty" type="string" quote="false" />
+        <input name="p_max_release_qty" type="string" quote="false" />
+        <input name="p_result_code" type="string" quote="true" />
+        <input name="p_added_datetime" type="string" quote="true" />
+        <input name="p_added_by" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_compliance_audit_id INT,
+                IN p_session_id VARCHAR(64),
+                IN p_account_id INT,
+                IN p_instrument_id INT,
+                IN p_order_id VARCHAR(16),
+                IN p_allocation_id VARCHAR(16),
+                IN p_release_id VARCHAR(16),
+                IN p_side_code TINYINT,
+                IN p_release_qty VARCHAR(30),
+                IN p_worst_case_long_qty INT,
+                IN p_worst_case_short_qty INT,
+                IN p_curr_open_long_qty INT,
+                IN p_curr_open_short_qty INT,
+                IN p_max_open_long_qty INT,
+                IN p_max_open_short_qty INT,
+                IN p_max_release_qty INT,
+                IN p_result_code VARCHAR(8),
+                IN p_added_datetime CHAR(17),
+                IN p_added_by VARCHAR(20)
+            )
+            BEGIN
+
+                INSERT INTO compliance_audit(
+                    compliance_audit_id,
+                    session_id,
+                    account_id,
+                    instrument_id,
+                    order_id,
+                    allocation_id,
+                    release_id,
+                    side_code,
+                    release_qty,
+                    worst_case_long_qty,
+                    worst_case_short_qty,
+                    curr_open_long_qty,
+                    curr_open_short_qty,
+                    max_open_long_qty,
+                    max_open_short_qty,
+                    max_release_qty,
+                    result_code,
+                    added_datetime,
+                    added_by )
+                VALUES (
+                    p_compliance_audit_id,
+                    p_session_id,
+                    p_account_id,
+                    p_instrument_id,
+                    p_order_id,
+                    p_allocation_id,
+                    p_release_id,
+                    p_side_code,
+                    p_release_qty,
+                    p_worst_case_long_qty,
+                    p_worst_case_short_qty,
+                    p_curr_open_long_qty,
+                    p_curr_open_short_qty,
+                    p_max_open_long_qty,
+                    p_max_open_short_qty,
+                    p_max_release_qty,
+                    p_result_code,
+                    p_added_datetime,
+                    p_added_by );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

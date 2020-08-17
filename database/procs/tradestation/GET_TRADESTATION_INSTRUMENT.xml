@@ -1,0 +1,26 @@
+<bdsq>
+    <procedure name="GET_TRADESTATION_INSTRUMENT" type="SELECT" >
+        <input name="p_symbol" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_symbol VARCHAR(8)
+            )
+            BEGIN
+
+                SELECT  tis.*, i.name
+                FROM    tradestation_instrument_symbol tis, instrument i
+                WHERE   tis.symbol = p_symbol
+                AND     tis.instrument_id = i.instrument_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

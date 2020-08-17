@@ -1,0 +1,26 @@
+<bdsq>
+    <procedure name="GET_SYSTEM_PARAMETERS" type="SELECT" >
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS `SP_NAME`;
+
+            DELIMITER |
+
+            CREATE PROCEDURE `SP_NAME`(
+            )
+            BEGIN
+
+                SELECT  parameter_id,
+                        category,
+                        name,
+                        value
+                FROM    system_parameter
+                ORDER BY category, name;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

@@ -1,0 +1,84 @@
+<bdsq>
+    <procedure name="UPDATE_ORDER" type="UPDATE" >
+        <input name="p_order_id" type="string" quote="true" />
+        <input name="p_order_type" type="string" quote="false" />
+        <input name="p_order_status" type="string" quote="false" />
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_symbol" type="string" quote="true" />
+        <input name="p_tif" type="string" quote="false" />
+        <input name="p_side_code" type="string" quote="false" />
+        <input name="p_base_ccy" type="string" quote="true" />
+        <input name="p_order_qty" type="string" quote="true" />
+        <input name="p_open_qty" type="string" quote="true" />
+        <input name="p_released_qty" type="string" quote="true" />
+        <input name="p_executed_qty" type="string" quote="true" />
+        <input name="p_limit_prc" type="string" quote="true" />
+        <input name="p_stop_prc" type="string" quote="true" />
+        <input name="p_mark_prc" type="string" quote="true" />
+        <input name="p_average_prc" type="string" quote="true" />
+        <input name="p_released_val" type="string" quote="true" />
+        <input name="p_executed_val" type="string" quote="true" />
+        <input name="p_updated_datetime" type="string" quote="true" />
+        <input name="p_updated_by" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_order_id VARCHAR(16),
+                IN p_order_type TINYINT,
+                IN p_order_status TINYINT,
+                IN p_instrument_id INT,
+                IN p_symbol VARCHAR(16),
+                IN p_tif TINYINT,
+                IN p_side_code TINYINT,
+                IN p_base_ccy CHAR(3),
+                IN p_order_qty VARCHAR(30),
+                IN p_open_qty VARCHAR(30),
+                IN p_released_qty VARCHAR(30),
+                IN p_executed_qty VARCHAR(30),
+                IN p_limit_prc VARCHAR(30),
+                IN p_stop_prc VARCHAR(30),
+                IN p_mark_prc VARCHAR(30),
+                IN p_average_prc VARCHAR(30),
+                IN p_released_val VARCHAR(30),
+                IN p_executed_val VARCHAR(30),
+                IN p_updated_datetime CHAR(20),
+                IN p_updated_by VARCHAR(16)
+            )
+            BEGIN
+
+                UPDATE orders SET
+                    order_type = p_order_type,
+                    order_status = p_order_status,
+                    instrument_id = p_instrument_id,
+                    symbol = p_symbol,
+                    tif = p_tif,
+                    side_code = p_side_code,
+                    base_ccy = p_base_ccy,
+                    order_qty = p_order_qty,
+                    open_qty = p_open_qty,
+                    released_qty = p_released_qty,
+                    executed_qty = p_executed_qty,
+                    limit_prc = p_limit_prc,
+                    stop_prc = p_stop_prc,
+                    mark_prc = p_mark_prc,
+                    average_prc = p_average_prc,
+                    released_val = p_released_val,
+                    executed_val = p_executed_val,
+                    updated_datetime = p_updated_datetime,
+                    updated_by = p_updated_by
+                WHERE order_id = p_order_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+

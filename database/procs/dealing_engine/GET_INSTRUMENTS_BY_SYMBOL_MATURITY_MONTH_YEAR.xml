@@ -1,0 +1,30 @@
+<bdsq>
+    <procedure name="GET_INSTRUMENTS_BY_SYMBOL_MATURITY_MONTH_YEAR" type="SELECT" >
+        <input name="p_symbol" type="string" quote="true" />
+        <input name="p_maturity_month_year" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_symbol VARCHAR(16),
+                IN p_maturity_month_year VARCHAR(8)
+            )
+            BEGIN
+
+                SELECT  *
+                FROM    instrument
+                WHERE   symbol = p_symbol
+                    AND maturity_month_year = p_maturity_month_year;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

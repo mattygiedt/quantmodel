@@ -1,0 +1,28 @@
+<bdsq>
+    <procedure name="DELETE_STRATEGY" type="UPDATE" >
+        <input name="p_strategy_id" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS `SP_NAME`;
+
+            DELIMITER |
+
+            CREATE PROCEDURE `SP_NAME`(
+                IN p_strategy_id INT
+            )
+            BEGIN
+
+                DELETE FROM account_strategy
+                WHERE   strategy_id = p_strategy_id;
+
+                DELETE FROM strategy
+                WHERE   strategy_id = p_strategy_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+ 

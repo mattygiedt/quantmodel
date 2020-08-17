@@ -1,0 +1,121 @@
+package investment_system.invsys_one;
+
+option cc_generic_services = false;
+option optimize_for = SPEED;
+
+message Timebar
+{
+    optional uint32 timestamp = 1;
+    optional double open = 2 [default=0];
+    optional double high = 3 [default=0];
+    optional double low = 4 [default=0];
+    optional double close = 5 [default=0];
+    optional uint32 buy_qty = 6 [default=0];
+    optional uint32 sell_qty = 7 [default=0];
+    optional uint32 unkn_qty = 8 [default=0];
+    optional double buy_val = 9 [default=0];
+    optional double sell_val = 10 [default=0];
+    optional double unkn_val = 11 [default=0];
+}
+
+message Trend
+{
+    enum TrendType
+    {
+        UP_TREND = 1;
+        DOWN_TREND = 2;
+    }
+
+    optional uint32 timestamp = 1;
+    optional TrendType type = 2;
+    optional double high = 3 [default=0];
+    optional double low = 4 [default=0];
+}
+
+message Pivot
+{
+    enum PivotType
+    {
+        UP_PIVOT = 1;
+        DOWN_PIVOT = 2;
+    }
+
+    optional uint32 timestamp = 1;
+    optional PivotType type = 2;
+    optional double price = 3 [default=0];
+}
+
+message OrderExecution
+{
+    enum ExecutionType
+    {
+        BUY = 1;
+        SELL = 2;
+    }
+
+    optional uint32 timestamp = 1;
+    optional uint32 timebar = 2;
+    optional ExecutionType type = 3;
+    optional double price = 4 [default=0];
+    optional uint32 quantity = 5 [default=0];
+}
+
+message InvestmentSystemOneRequest
+{
+    enum RequestType
+    {
+        LOGIN = 1;
+        PAUSE = 2;
+        RESUME = 3;
+        FLATTEN = 4;
+        SHUTDOWN = 5;
+    }
+
+    optional string request_id = 1;
+    optional string timestamp = 2;
+    optional RequestType type = 3;
+}
+
+message InvestmentSystemOneResponse
+{
+    enum ResponseType
+    {
+        ACKNOWLEDGEMENT = 1;
+        REJECT = 2;
+        ERROR = 3;
+    }
+
+    optional string response_id = 1;
+    optional string request_id = 2;
+    optional string timestamp = 3;
+    optional ResponseType type = 4;
+    optional string error_msg = 5;
+}
+
+message InvestmentSystemOneData
+{
+    enum DataType
+    {
+        SYSTEM = 1;
+        TIMEBAR = 2;
+        TREND = 3;
+        PIVOT = 4;
+        EXECUTION = 5;
+        LOGIN = 6;
+    }
+
+    optional DataType type = 1;
+    optional string opening_tm = 2;
+    optional string closing_tm = 3;
+    optional string update_tm = 4;
+    optional string status = 5;
+    optional double best_bid = 6;
+    optional double best_ask = 7;
+    optional double open_pl = 8;
+    optional double closed_pl = 9;
+
+    repeated OrderExecution order_execution = 10;
+    repeated Timebar timebar = 11;
+    repeated Trend trend = 12;
+    repeated Pivot pivot = 13;
+}

@@ -1,0 +1,28 @@
+<bdsq>
+    <procedure name="GET_ACTIVE_INSTRUMENTS_BY_SYMBOL" type="SELECT" >
+        <input name="p_symbol" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_symbol VARCHAR(16)
+            )
+            BEGIN
+
+                SELECT  *
+                FROM    instrument
+                WHERE   symbol = p_symbol
+                    AND is_active = 1;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

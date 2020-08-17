@@ -1,0 +1,44 @@
+<bdsq>
+    <procedure name="GET_UNPROCESSED_SIGNALS_BY_REQUEST" type="SELECT" >
+        <input name="p_request_id" type="string" quote="true" />
+        <input name="p_investment_system_id" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_request_id VARCHAR(64),
+                IN p_investment_system_id VARCHAR(16)
+            )
+            BEGIN
+
+                SELECT  ss.strategy_signal_id,
+                        ss.strategy_id,
+                        ss.request_id,
+                        ss.instrument_id,
+                        ss.instrument_name,
+                        ss.last_prc,
+                        ss.signal_qty,
+                        ss.signal_limit_prc,
+                        ss.is_suppressed,
+                        ss.is_processed,
+                        ss.added_datetime,
+                        ss.added_by,
+                        ss.updated_datetime,
+                        ss.updated_by
+                FROM    strategy_signal ss, strategy s
+                WHERE   ss.strategy_id = p_strategy_id
+                    AND ss.strategy_id = s.strategy_id
+                    AND s.investment_system_id = p_investment_system_id
+                    AND ss.is_processed = 0
+                ORDER BY ss.added_datetime;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

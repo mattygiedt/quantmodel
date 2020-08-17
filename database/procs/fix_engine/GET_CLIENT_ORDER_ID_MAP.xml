@@ -1,0 +1,27 @@
+<bdsq>
+    <procedure name="GET_CLIENT_ORDER_ID_MAP" type="SELECT" >
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+
+            )
+            BEGIN
+
+                SELECT  *
+                FROM    client_order_id_map
+                WHERE   is_active = 1
+                ORDER BY added_datetime;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

@@ -1,0 +1,56 @@
+<bdsq>
+    <procedure name="INSERT_MARKET_DATA_EVENT" type="UPDATE" >
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_event_type" type="string" quote="true" />
+        <input name="p_event_action" type="string" quote="true" />
+        <input name="p_event_prc" type="string" quote="true" />
+        <input name="p_event_qty" type="string" quote="true" />
+        <input name="p_event_tm" type="string" quote="true" />
+        <input name="p_timebar_key" type="string" quote="true" />
+        <input name="p_arrival_tm" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_instrument_id INT,
+                IN p_event_type CHAR(1),
+                IN p_event_action CHAR(1),
+                IN p_event_prc VARCHAR(30),
+                IN p_event_qty VARCHAR(30),
+                IN p_event_tm CHAR(21),
+                IN p_timebar_key CHAR(14),
+                IN p_arrival_tm CHAR(20)
+            )
+            BEGIN
+
+                INSERT INTO market_data_event (
+                    instrument_id,
+                    event_type,
+                    event_action,
+                    event_prc,
+                    event_qty,
+                    event_tm,
+                    timebar_key,
+                    arrival_tm )
+                VALUES (
+                    p_instrument_id,
+                    p_event_type,
+                    p_event_action,
+                    p_event_prc,
+                    p_event_qty,
+                    p_event_tm,
+                    p_timebar_key,
+                    p_arrival_tm );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

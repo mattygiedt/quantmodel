@@ -1,0 +1,28 @@
+<bdsq>
+    <procedure name="GET_ACCOUNT_INSTRUMENTS" type="SELECT" >
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS `SP_NAME`;
+
+            DELIMITER |
+
+            CREATE PROCEDURE `SP_NAME`(
+            )
+            BEGIN
+
+                SELECT  f.account_id,
+                        i.instrument_id,
+                        i.name,
+                        f.session_id,
+                        f.fix_engine_id
+                FROM    fix_engine_session f, instrument i
+                WHERE   f.instrument_id = i.instrument_id
+                ORDER BY f.account_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

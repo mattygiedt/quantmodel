@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/bdsquant/!svn/ver/397/trunk/source/task_engine/java/jar
+END
+memcached-2.3.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/bdsquant/!svn/ver/397/trunk/source/task_engine/java/jar/memcached-2.3.1.jar
+END
+zmq.jar
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/bdsquant/!svn/ver/397/trunk/source/task_engine/java/jar/zmq.jar
+END
+xpp3-1.1.4c.jar
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/bdsquant/!svn/ver/397/trunk/source/task_engine/java/jar/xpp3-1.1.4c.jar
+END
+dom4j-1.6.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/bdsquant/!svn/ver/397/trunk/source/task_engine/java/jar/dom4j-1.6.1.jar
+END
+jaxen-1.1.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/bdsquant/!svn/ver/397/trunk/source/task_engine/java/jar/jaxen-1.1.1.jar
+END
+log4j-1.2.15.jar
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/bdsquant/!svn/ver/397/trunk/source/task_engine/java/jar/log4j-1.2.15.jar
+END

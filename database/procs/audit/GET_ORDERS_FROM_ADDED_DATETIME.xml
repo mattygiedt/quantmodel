@@ -1,0 +1,28 @@
+<bdsq>
+    <procedure name="GET_ORDERS_FROM_ADDED_DATETIME" type="SELECT" >
+        <input name="p_added_datetime" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_added_datetime CHAR(20)
+            )
+            BEGIN
+
+                SELECT  order_id
+                FROM    orders
+                WHERE   added_datetime >= p_added_datetime
+                ORDER BY added_datetime;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

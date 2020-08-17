@@ -1,0 +1,33 @@
+<bdsq>
+    <procedure name="GET_TRADESTATION_ORDERS_BY_INSTRUMENT_STRATEGY_EXPIRATION" type="SELECT" >
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_strategy_id" type="string" quote="true" />
+        <input name="p_expiration_dt" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_instrument_id INT,
+                IN p_strategy_id VARCHAR(32),
+                IN p_expiration_dt CHAR(12)
+            )
+            BEGIN
+
+                SELECT  *
+                FROM    tradestation_order
+                WHERE   instrument_id = p_instrument_id
+                AND     signal_id = p_signal_id
+                AND     expiration_dt = p_expiration_dt
+                ORDER BY order_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+ 

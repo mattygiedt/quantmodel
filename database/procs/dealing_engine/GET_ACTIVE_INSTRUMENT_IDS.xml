@@ -1,0 +1,25 @@
+<bdsq>
+    <procedure name="GET_ACTIVE_INSTRUMENT_IDS" type="SELECT" >
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+            )
+            BEGIN
+
+                SELECT  instrument_id
+                FROM    instrument
+                WHERE   is_active = 1;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

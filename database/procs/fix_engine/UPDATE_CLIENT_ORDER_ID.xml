@@ -1,0 +1,43 @@
+<bdsq>
+    <procedure name="UPDATE_CLIENT_ORDER_ID" type="UPDATE" >
+        <input name="p_client_order_id" type="string" quote="true" />
+        <input name="p_release_id" type="string" quote="true" />
+        <input name="p_order_id" type="string" quote="true" />
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_investment_system_id" type="string" quote="true" />
+        <input name="p_updated_datetime" type="string" quote="true" />
+        <input name="p_updated_by" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_client_order_id CHAR(20) ,
+                IN p_release_id VARCHAR(16) ,
+                IN p_order_id VARCHAR(16) ,
+                IN p_instrument_id INT ,
+                IN p_investment_system_id VARCHAR(16) ,
+                IN p_updated_datetime CHAR(20),
+                IN p_updated_by VARCHAR(16)
+            )
+            BEGIN
+
+                UPDATE client_order_id_map SET
+                    release_id = p_release_id,
+                    order_id = p_order_id,
+                    instrument_id = p_instrument_id,
+                    investment_system_id = p_investment_system_id,
+                    updated_datetime = p_updated_datetime,
+                    updated_by = p_updated_by
+                WHERE client_order_id = p_client_order_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

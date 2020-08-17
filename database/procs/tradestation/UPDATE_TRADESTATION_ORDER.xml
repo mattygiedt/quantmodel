@@ -1,0 +1,47 @@
+<bdsq>
+    <procedure name="UPDATE_TRADESTATION_ORDER" type="SELECT" >
+        <input name="p_tradestation_order_id" type="string" quote="false" />
+        <input name="p_order_id" type="string" quote="true" />
+        <input name="p_is_executed" type="string" quote="false" />
+        <input name="p_is_open" type="string" quote="false" />
+        <input name="p_updated_datetime" type="string" quote="true" />
+        <input name="p_updated_by" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_tradestation_order_id INT,
+                IN p_order_id VARCHAR(16),
+                IN p_is_executed TINYINT,
+                IN p_is_open TINYINT,
+                IN p_updated_datetime CHAR(20),
+                IN p_updated_by VARCHAR(16)
+            )
+            BEGIN
+
+                UPDATE tradestation_order
+                SET
+                    order_id = p_order_id,
+                    is_executed = p_is_executed,
+                    is_open = p_is_open,
+                    updated_datetime = p_updated_datetime,
+                    updated_by = p_updated_by
+                WHERE tradestation_order_id = p_tradestation_order_id;
+
+                SELECT * FROM tradestation_order WHERE tradestation_order_id = p_tradestation_order_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+
+
+                    

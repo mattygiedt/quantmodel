@@ -1,0 +1,21 @@
+<bdsq>
+    <procedure name="DELETE_POSITION_OVERNIGHT" type="UPDATE" >
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+            )
+            BEGIN
+
+                UPDATE position_overnight SET is_active = 0;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

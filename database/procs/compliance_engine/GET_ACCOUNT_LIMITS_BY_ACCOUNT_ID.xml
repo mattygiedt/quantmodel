@@ -1,0 +1,27 @@
+<bdsq>
+    <procedure name="GET_ACCOUNT_LIMITS_BY_ACCOUNT_ID" type="SELECT">
+        <input name="p_account_id" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_account_id INT
+            )
+            BEGIN
+
+                SELECT  *
+                FROM    account_limit
+                WHERE   account_id = p_account_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

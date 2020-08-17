@@ -1,0 +1,36 @@
+<bdsq>
+    <procedure name="UPDATE_INSTRUMENT_LOOKUP" type="UPDATE" >
+        <input name="p_investment_system_id" type="string" quote="true" />
+        <input name="p_instrument_id_type_id" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_investment_system_id VARCHAR(16) ,
+                IN p_instrument_id_type_id VARCHAR(8)
+            )
+            BEGIN
+
+                DELETE FROM instrument_lookup
+                WHERE investment_system_id = p_investment_system_id;
+
+                INSERT INTO instrument_lookup (
+                    investment_system_id,
+                    instrument_id_type_id )
+                VALUES (
+                    p_investment_system_id,
+                    p_instrument_id_type_id );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+

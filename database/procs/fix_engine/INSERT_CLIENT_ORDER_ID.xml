@@ -1,0 +1,75 @@
+<bdsq>
+    <procedure name="INSERT_CLIENT_ORDER_ID" type="UPDATE" >
+        <input name="p_client_order_id" type="string" quote="true" />
+        <input name="p_correlation_order_id" type="string" quote="true" />
+        <input name="p_orig_client_order_id" type="string" quote="true" />
+        <input name="p_session_id" type="string" quote="true" />
+        <input name="p_release_id" type="string" quote="true" />
+        <input name="p_order_id" type="string" quote="true" />
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_investment_system_id" type="string" quote="true" />
+        <input name="p_added_datetime" type="string" quote="true" />
+        <input name="p_added_by" type="string" quote="true" />
+        <input name="p_updated_datetime" type="string" quote="true" />
+        <input name="p_updated_by" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_client_order_id CHAR(20) ,
+                IN p_correlation_order_id CHAR(20) ,
+                IN p_orig_client_order_id CHAR(20) ,
+                IN p_session_id VARCHAR(64) ,
+                IN p_release_id VARCHAR(16) ,
+                IN p_order_id VARCHAR(16) ,
+                IN p_instrument_id INT ,
+                IN p_investment_system_id VARCHAR(16),
+                IN p_added_datetime CHAR(20),
+                IN p_added_by VARCHAR(16),
+                IN p_updated_datetime CHAR(20),
+                IN p_updated_by VARCHAR(16)
+            )
+            BEGIN
+
+                INSERT INTO client_order_id_map (
+                    client_order_id,
+                    correlation_order_id,
+                    orig_client_order_id,
+                    session_id,
+                    release_id,
+                    order_id,
+                    instrument_id,
+                    investment_system_id,
+                    is_active,
+                    added_datetime,
+                    added_by,
+                    updated_datetime,
+                    updated_by )
+                VALUES (
+                    p_client_order_id,
+                    p_correlation_order_id,
+                    p_orig_client_order_id,
+                    p_session_id,
+                    p_release_id,
+                    p_order_id,
+                    p_instrument_id,
+                    p_investment_system_id,
+                    1,
+                    p_added_datetime,
+                    p_added_by,
+                    p_updated_datetime,
+                    p_updated_by );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

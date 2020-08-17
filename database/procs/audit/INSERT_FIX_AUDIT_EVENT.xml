@@ -1,0 +1,201 @@
+<bdsq>
+    <procedure name="INSERT_FIX_AUDIT_EVENT" type="UPDATE" >
+        <input name="p_session_id" type="string" quote="true" />
+        <input name="p_message_direction" type="string" quote="true" />
+        <input name="p_account" type="string" quote="true" />
+        <input name="p_avgpx" type="string" quote="true" />
+        <input name="p_clordid" type="string" quote="true" />
+        <input name="p_cumqty" type="string" quote="true" />
+        <input name="p_execid" type="string" quote="true" />
+        <input name="p_execrefid" type="string" quote="true" />
+        <input name="p_exectranstype" type="string" quote="true" />
+        <input name="p_lastpx" type="string" quote="true" />
+        <input name="p_lastshares" type="string" quote="true" />
+        <input name="p_msgtype" type="string" quote="true" />
+        <input name="p_orderid" type="string" quote="true" />
+        <input name="p_orderqty" type="string" quote="true" />
+        <input name="p_ordstatus" type="string" quote="true" />
+        <input name="p_ordtype" type="string" quote="true" />
+        <input name="p_origclordid" type="string" quote="true" />
+        <input name="p_price" type="string" quote="true" />
+        <input name="p_securityid" type="string" quote="true" />
+        <input name="p_sendercompid" type="string" quote="true" />
+        <input name="p_sendersubid" type="string" quote="true" />
+        <input name="p_sendingtime" type="string" quote="true" />
+        <input name="p_shares" type="string" quote="true" />
+        <input name="p_side" type="string" quote="true" />
+        <input name="p_symbol" type="string" quote="true" />
+        <input name="p_targetcompid" type="string" quote="true" />
+        <input name="p_targetsubid" type="string" quote="true" />
+        <input name="p_text" type="string" quote="true" />
+        <input name="p_timeinforce" type="string" quote="true" />
+        <input name="p_transacttime" type="string" quote="true" />
+        <input name="p_stoppx" type="string" quote="true" />
+        <input name="p_senderlocationid" type="string" quote="true" />
+        <input name="p_exectype" type="string" quote="true" />
+        <input name="p_leavesqty" type="string" quote="true" />
+        <input name="p_securitytype" type="string" quote="true" />
+        <input name="p_maturitymonthyear" type="string" quote="true" />
+        <input name="p_customerorfirm" type="string" quote="true" />
+        <input name="p_securityexchange" type="string" quote="true" />
+        <input name="p_maxshow" type="string" quote="true" />
+        <input name="p_manualorderindicator" type="string" quote="true" />
+        <input name="p_cticode" type="string" quote="true" />
+        <input name="p_correlationclordid" type="string" quote="true" />
+        <input name="p_added_datetime" type="string" quote="true" />
+        <input name="p_added_by" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_session_id VARCHAR(64) ,
+                IN p_message_direction VARCHAR(8) ,
+                IN p_account VARCHAR(16) ,
+                IN p_avgpx VARCHAR(30) ,
+                IN p_clordid VARCHAR(32) ,
+                IN p_cumqty VARCHAR(30) ,
+                IN p_execid VARCHAR(32) ,
+                IN p_execrefid VARCHAR(32) ,
+                IN p_exectranstype VARCHAR(2) ,
+                IN p_lastpx VARCHAR(30) ,
+                IN p_lastshares VARCHAR(30) ,
+                IN p_msgtype VARCHAR(2) ,
+                IN p_orderid VARCHAR(32) ,
+                IN p_orderqty VARCHAR(30) ,
+                IN p_ordstatus VARCHAR(2) ,
+                IN p_ordtype VARCHAR(2) ,
+                IN p_origclordid VARCHAR(32) ,
+                IN p_price VARCHAR(30) ,
+                IN p_securityid VARCHAR(32) ,
+                IN p_sendercompid VARCHAR(32) ,
+                IN p_sendersubid VARCHAR(32) ,
+                IN p_sendingtime VARCHAR(32) ,
+                IN p_shares VARCHAR(30) ,
+                IN p_side VARCHAR(2) ,
+                IN p_symbol VARCHAR(16) ,
+                IN p_targetcompid VARCHAR(32) ,
+                IN p_targetsubid VARCHAR(32) ,
+                IN p_text VARCHAR(255) ,
+                IN p_timeinforce VARCHAR(2) ,
+                IN p_transacttime VARCHAR(32) ,
+                IN p_stoppx VARCHAR(30) ,
+                IN p_senderlocationid VARCHAR(16) ,
+                IN p_exectype VARCHAR(2) ,
+                IN p_leavesqty VARCHAR(30) ,
+                IN p_securitytype VARCHAR(8) ,
+                IN p_maturitymonthyear VARCHAR(45) ,
+                IN p_customerorfirm VARCHAR(2) ,
+                IN p_securityexchange VARCHAR(16) ,
+                IN p_maxshow VARCHAR(30) ,
+                IN p_manualorderindicator VARCHAR(2) ,
+                IN p_cticode VARCHAR(2) ,
+                IN p_correlationclordid VARCHAR(32) ,
+                IN p_added_datetime CHAR(17) ,
+                IN p_added_by VARCHAR(20)
+            )
+            BEGIN
+
+            INSERT INTO fix_audit(
+                session_id,
+                message_direction,
+                account,
+                avgpx,
+                clordid,
+                cumqty,
+                execid,
+                execrefid,
+                exectranstype,
+                lastpx,
+                lastshares,
+                msgtype,
+                orderid,
+                orderqty,
+                ordstatus,
+                ordtype,
+                origclordid,
+                price,
+                securityid,
+                sendercompid,
+                sendersubid,
+                sendingtime,
+                shares,
+                side,
+                symbol,
+                targetcompid,
+                targetsubid,
+                text,
+                timeinforce,
+                transacttime,
+                stoppx,
+                senderlocationid,
+                exectype,
+                leavesqty,
+                securitytype,
+                maturitymonthyear,
+                customerorfirm,
+                securityexchange,
+                maxshow,
+                manualorderindicator,
+                cticode,
+                correlationclordid,
+                added_datetime,
+                added_by )
+            VALUES (
+                p_session_id,
+                p_message_direction,
+                p_account,
+                p_avgpx,
+                p_clordid,
+                p_cumqty,
+                p_execid,
+                p_execrefid,
+                p_exectranstype,
+                p_lastpx,
+                p_lastshares,
+                p_msgtype,
+                p_orderid,
+                p_orderqty,
+                p_ordstatus,
+                p_ordtype,
+                p_origclordid,
+                p_price,
+                p_securityid,
+                p_sendercompid,
+                p_sendersubid,
+                p_sendingtime,
+                p_shares,
+                p_side,
+                p_symbol,
+                p_targetcompid,
+                p_targetsubid,
+                p_text,
+                p_timeinforce,
+                p_transacttime,
+                p_stoppx,
+                p_senderlocationid,
+                p_exectype,
+                p_leavesqty,
+                p_securitytype,
+                p_maturitymonthyear,
+                p_customerorfirm,
+                p_securityexchange,
+                p_maxshow,
+                p_manualorderindicator,
+                p_cticode,
+                p_correlationclordid,
+                p_added_datetime,
+                p_added_by );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

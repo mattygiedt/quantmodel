@@ -1,0 +1,38 @@
+<bdsq>
+    <procedure name="UPDATE_STRATEGY" type="UPDATE" >
+        <input name="p_strategy_id" type="string" quote="false" />
+        <input name="p_signal_id" type="string" quote="true" />
+        <input name="p_name" type="string" quote="true" />
+        <input name="p_default_weight" type="string" quote="false" />
+        <input name="p_is_active" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS `SP_NAME`;
+
+            DELIMITER |
+
+            CREATE PROCEDURE `SP_NAME`(
+                IN p_strategy_id INT,
+                IN p_signal_id VARCHAR(32),
+                IN p_name VARCHAR(32),
+                IN p_default_weight INT ,
+                IN p_is_active TINYINT
+            )
+            BEGIN
+
+                UPDATE strategy
+                SET signal_id = p_signal_id,
+                    name = p_name,
+                    default_weight = p_default_weight,
+                    is_active = p_is_active
+                WHERE strategy_id = p_strategy_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

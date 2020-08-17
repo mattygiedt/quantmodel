@@ -1,0 +1,48 @@
+<bdsq>
+    <procedure name="INSERT_INVESTMENT_SYSTEM" type="UPDATE" >
+        <input name="p_investment_system_id" type="string" quote="true" />
+        <input name="p_name" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_investment_system_id VARCHAR(16) ,
+                IN p_name VARCHAR(32)
+            )
+            BEGIN
+
+                INSERT INTO investment_system (
+                    investment_system_id,
+                    name,
+                    is_active )
+                VALUES (
+                    p_investment_system_id,
+                    p_name,
+                    0 );
+
+                INSERT INTO instrument_lookup (
+                    investment_system_id,
+                    instrument_id_type_id )
+                VALUES (
+                    p_investment_system_id,
+                    'SYMBOL' );
+
+                INSERT into investment_system_instrument (
+                    investment_system_id, instrument_id )
+                    SELECT p_investment_system_id, instrument_id
+                    FROM instrument
+                    WHERE is_active = 1;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+

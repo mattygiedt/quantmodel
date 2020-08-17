@@ -1,0 +1,31 @@
+<bdsq>
+    <procedure name="GET_INVESTMENT_SYSTEMS_BY_ACCOUNT" type="SELECT" >
+        <input name="p_account_id" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS `SP_NAME`;
+
+            DELIMITER |
+
+            CREATE PROCEDURE `SP_NAME`(
+                IN p_account_id INT
+            )
+            BEGIN
+
+                SELECT  i.investment_system_id,
+                        i.name,
+                        i.is_active
+                FROM    investment_system i, account a, account_strategy a_s, strategy s
+                WHERE   a_s.account_id = p_account_id
+                    AND s.strategy_id = a_s.strategy_id
+                    AND s.investment_system_id = i.investment_system_id
+                GROUP BY i.investment_system_id, i.name, i.is_active;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+ 

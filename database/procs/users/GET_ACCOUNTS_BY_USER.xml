@@ -1,0 +1,29 @@
+<bdsq>
+    <procedure name="GET_ACCOUNTS_BY_USER" type="SELECT" >
+        <input name="p_user_id" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_user_id INT
+            )
+            BEGIN
+
+                SELECT  a.*
+                FROM    account a, user_account ua
+                WHERE   ua.user_id = p_user_id
+                AND     ua.account_id = a.account_id
+                ORDER BY a.account_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

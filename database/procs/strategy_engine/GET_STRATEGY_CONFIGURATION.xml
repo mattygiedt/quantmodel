@@ -1,0 +1,31 @@
+<bdsq>
+    <procedure name="GET_STRATEGY_CONFIGURATION" type="SELECT" >
+        <input name="p_account_id" type="string" quote="false" />
+        <input name="p_strategy_id" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS `SP_NAME`;
+
+            DELIMITER |
+
+            CREATE PROCEDURE `SP_NAME`(
+                IN p_account_id INT,
+                IN p_strategy_id INT
+            )
+            BEGIN
+
+                SELECT  strategy_configuration_id,
+                        name,
+                        value
+                FROM    strategy_configuration s
+                WHERE   s.account_id = p_account_id
+                    AND s.strategy_id = p_strategy_id
+                ORDER BY name;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

@@ -1,0 +1,27 @@
+<bdsq>
+    <procedure name="GET_EXECUTION_BY_EXECUTION_ID" type="SELECT">
+        <input name="p_execution_id" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_execution_id VARCHAR(16)
+            )
+            BEGIN
+
+                SELECT  *
+                FROM    executions
+                WHERE   execution_id = p_execution_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 

@@ -1,0 +1,26 @@
+<bdsq>
+    <procedure name="GET_TRADESTATION_ORDER_BY_TRADESTATION_ORDER_ID" type="SELECT" >
+        <input name="p_tradestation_order_id" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_tradestation_order_id INT
+            )
+            BEGIN
+
+                SELECT  *
+                FROM    tradestation_order
+                WHERE   tradestation_order_id = p_tradestation_order_id;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+ 

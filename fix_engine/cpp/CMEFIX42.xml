@@ -1,0 +1,941 @@
+<fix major="4" minor="2">
+	<header>
+		<field name="BeginString" required="Y" />
+		<field name="BodyLength" required="Y" />
+		<field name="MsgType" required="Y" />
+		<field name="SenderCompID" required="Y" />
+		<field name="TargetCompID" required="Y" />
+		<field name="MsgSeqNum" required="Y" />
+		<field name="SenderSubID" required="N" />
+		<field name="TargetSubID" required="N" />
+		<field name="OnBehalfOfSubID" required="N" />
+		<field name="DeliverToSubID" required="N" />
+		<field name="PossDupFlag" required="N" />
+		<field name="PossResendFlag" required="N" />
+		<field name="SendingTime" required="Y" />
+		<field name="OrigSendingTime" required="N" />
+		<field name="LastMsgSeqNumProcessed" required="N" />
+		<field name="TargetLocationID" required="N" />
+		<field name="ApplicationSystemName" required="N" />
+		<field name="TradingSystemVersion" required="N" />
+		<field name="ApplicationSystemVendor" required="N" />
+	</header>
+	<trailer>
+		<field name="CheckSum" required="Y" />
+	</trailer>
+	<messages>
+		<message name="Heartbeat" msgtype="0" msgcat="admin">
+			<field name="TestReqID" required="N" />
+		</message>
+		<message name="Logon" msgtype="A" msgcat="admin">
+			<field name="RawData" required="N" />
+			<field name="EncryptMethod" required="Y" />
+			<field name="HeartBtInt" required="Y" />
+			<field name="ResetSeqNumFlag" required="N" />
+			<field name="ApplicationName" required="N" />
+			<field name="ManualOrderIndicator" required="N" />
+		</message>
+		<message name="TestRequest" msgtype="1" msgcat="admin">
+		    <field name="TestReqID" required="Y" />
+		    <field name="ManualOrderIndicator" required="N" />
+		</message>
+		<message name="ResendRequest" msgtype="2" msgcat="admin">
+			<field name="BeginSeqNo" required="Y" />
+			<field name="EndSeqNo" required="Y" />
+			<field name="ManualOrderIndicator" required="N" />
+		</message>
+		<message name="Reject" msgtype="3" msgcat="admin">
+			<field name="RefSeqNum" required="N" />
+			<field name="Text" required="N" />
+			<field name="RefTagID" required="N" />
+			<field name="RefMsgType" required="N" />
+			<field name="SessionRejectReason" required="N" />
+			<field name="ManualOrderIndicator" required="N" />
+		</message>
+		<message name="SequenceReset" msgtype="4" msgcat="admin">
+			<field name="GapFillFlag" required="N" />
+			<field name="NewSeqNo" required="Y" />
+			<field name="ManualOrderIndicator" required="N" />
+		</message>
+		<message name="Logout" msgtype="5" msgcat="admin">
+			<field name="Text" required="N" />
+			<field name="ForceLogout" required="N" />
+            <field name="NextExpectedMsgSeqNum" required="N" />
+            <field name="ManualOrderIndicator" required="N" />
+		</message>
+		<!-- FIX Adapter restricts the MarketDataRequest message to its Price session.  -->
+		<message name="MarketDataRequest" msgtype="V" msgcat="app">
+			<field name="MDReqID" required="Y" />
+			<field name="SubscriptionRequestType" required="Y" />
+			<field name="MarketDepth" required="Y" />
+			<field name="MDUpdateType" required="N" />
+			<field name="AggregatedBook" required="N" />
+			<field name="ManualOrderIndicator" required="N" />
+			<group name="NoMDEntryTypes" required="N">
+				<field name="MDEntryType" required="N" />
+			</group>
+			<group name="NoRelatedSym" required="Y">
+				<field name="Symbol" required="N" />
+				<field name="SecurityType" required="N" />
+				<field name="MaturityMonthYear" required="N" />
+				<field name="MaturityDay" required="N" />
+				<field name="PutOrCall" required="N" />
+				<field name="StrikePrice" required="N" />
+				<field name="OptAttribute" required="N" />
+				<field name="LotsPerContract" required="N" />
+				<field name="SecurityID" required="N" />
+				<field name="SecurityAltID" required="N" />
+				<field name="SecurityExchange" required="N" />
+				<field name="SettlType" required="N" />
+				<field name="ContractTerm" required="N" />
+			</group>
+		</message>
+		<!-- FIX Adapter restricts the MarketDataSnapshotFullRefresh message to its Price session.  -->
+		<message name="MarketDataSnapshotFullRefresh" msgtype="W" msgcat="app">
+			<!-- FIX Adapter will always send MDReqID. -->
+			<field name="MDReqID" required="Y" />
+			<field name="Symbol" required="Y" />
+			<field name="SecurityType" required="Y" />
+			<field name="MaturityMonthYear" required="N" />
+			<field name="MaturityDay" required="N" />
+			<field name="PutOrCall" required="N" />
+			<field name="StrikePrice" required="N" />
+			<field name="OptAttribute" required="N" />
+			<field name="LotsPerContract" required="N" />
+			<field name="SecurityID" required="Y" />
+			<field name="SecurityAltID" required="N" />
+			<field name="SecurityExchange" required="Y" />
+			<field name="SettlType" required="N" />
+			<field name="TotalVolumeTraded" required="N" />
+			<field name="Currency" required="N" />
+			<field name="PriceFeedStatus" required="N" />
+			<field name="ContractTerm" required="N" />
+			<field name="ManualOrderIndicator" required="N" />
+			<group name="NoMDEntries" required="Y">
+				<field name="MDEntryType" required="Y" />
+				<field name="MDEntryPx" required="N" />
+				<field name="MDEntrySize" required="N" />
+				<field name="MDEntryPositionNo" required="N" />
+				<field name="SecondaryOrderID" required="N" />
+				<field name="MDEntryState" required="N" />
+				<field name="AggressorSide" required="N" />
+				<field name="MDEntrySizeType" required="N" />
+			</group>
+		</message>
+		<!-- FIX Adapter restricts the MarketDataIncrementalRefresh message to its Price session.  -->
+		<message name="MarketDataIncrementalRefresh" msgtype="X" msgcat="app">
+			<!-- FIX Adapter will always send MDReqID. -->
+			<field name="MDReqID" required="Y" />
+			<field name="ManualOrderIndicator" required="N" />
+			<group name="NoMDEntries" required="Y">
+				<field name="MDUpdateAction" required="Y" />
+				<field name="Symbol" required="N" />
+				<field name="SecurityType" required="N" />
+				<field name="MaturityMonthYear" required="N" />
+				<field name="MaturityDay" required="N" />
+				<field name="PutOrCall" required="N" />
+				<field name="StrikePrice" required="N" />
+				<field name="OptAttribute" required="N" />
+				<field name="LotsPerContract" required="N" />
+				<field name="SecurityID" required="N" />
+				<field name="SecurityAltID" required="N" />
+				<field name="SecurityExchange" required="N" />
+				<field name="SettlType" required="N" />
+				<field name="MDEntryType" required="Y" />
+				<field name="MDEntryPx" required="N" />
+				<field name="MDEntrySize" required="N" />
+				<field name="MDEntryPositionNo" required="N" />
+				<field name="TotalVolumeTraded" required="N" />
+				<field name="SecondaryOrderID" required="N" />
+				<field name="MDEntryState" required="N" />
+				<field name="Currency" required="N" />
+				<field name="PriceFeedStatus" required="N" />
+				<field name="ContractTerm" required="N" />
+				<field name="AggressorSide" required="N" />
+				<field name="MDEntrySizeType" required="N" />
+			</group>
+		</message>
+		<!-- FIX Adapter restricts the MarketDataRequestReject message to its Price session.  -->
+		<message name="MarketDataRequestReject" msgtype="Y" msgcat="app">
+			<field name="MDReqID" required="Y" />
+			<field name="Text" required="Y" />
+		</message>
+		<message name="SecurityDefinitionRequest" msgtype="c" msgcat="app">
+			<field name="SecurityReqID" required="Y" />
+			<field name="SecurityRequestType" required="N" />
+			<field name="RequestTickTable" required="N" />
+			<field name="Symbol" required="N" />
+			<field name="SecurityID" required="N" />
+			<field name="SecurityType" required="N" />
+			<field name="SecurityExchange" required="N" />
+			<field name="ContractTerm" required="N" />
+			<field name="ManualOrderIndicator" required="N" />
+		</message>
+		<message name="SecurityDefinition" msgtype="d" msgcat="app">
+			<field name="SecurityReqID" required="Y" />
+			<field name="SecurityResponseID" required="Y" />
+			<field name="SecurityResponseType" required="Y" />
+			<group name="NoRelatedSym" required="N">
+				<field name="UnderlyingSymbol" required="N" />
+				<field name="UnderlyingSecurityID" required="N" />
+				<field name="UnderlyingSecurityType" required="N" />
+				<field name="UnderlyingMaturityMonthYear" required="N" />
+				<field name="UnderlyingStrikePrice" required="N" />
+				<field name="UnderlyingPutOrCall" required="N" />
+				<field name="UnderlyingMaturityDay" required="N" />
+				<field name="UnderlyingOptAttribute" required="N" />
+				<field name="UnderlyingSecurityExchange" required="N" />
+				<field name="UnderlyingSecurityAltID" required="N" />
+				<field name="UnderlyingContractTerm" required="N" />
+				<field name="Side" required="N" />
+				<field name="RatioQty" required="N" />
+				<field name="UnderlyingCurrency" required="N" />
+                <field name="LegPrice" required="N" />
+			</group>
+			<field name="TotalNumSecurities" required="Y" />
+			<field name="Currency" required="Y" />
+			<field name="ExpectedFillType" required="N" />
+			<field name="PriceDisplayType" required="Y" />
+			<field name="TickSize" required="Y" />
+			<field name="PointValue" required="Y" />
+			<group name="NumTickTblEntries" required="Y">
+				<field name="NumTicks" required="N" />
+				<field name="MaxPrice" required="N" />
+			</group>
+			<group name="NoEvents" required="N">
+				<field name="EventType" required="N" />
+				<field name="EventDate" required="N" />
+			</group>
+			<group name="NoGateways" required="N">
+				<field name="ExchangeGateway" required="N" />
+			</group>
+			<field name="LotSize" required="N" />
+			<field name="ExchTickSize" required="Y" />
+			<field name="ExchPointValue" required="Y" />
+			<field name="MarginExcess" required="N" />
+			<field name="SecuritySubType" required="N" />
+			<field name="Symbol" required="Y" />
+			<field name="SecurityID" required="Y" />
+			<field name="SecurityAltID" required="N" />
+			<field name="SecurityType" required="N" />
+			<field name="MaturityMonthYear" required="N" />
+			<field name="MaturityDay" required="N" />
+			<field name="PutOrCall" required="N" />
+			<field name="StrikePrice" required="N" />
+			<field name="OptAttribute" required="N" />
+			<field name="SecurityExchange" required="Y" />
+			<field name="ContractTerm" required="N" />
+			<field name="SettlType" required="N" />
+			<field name="DeliveryUnit" required="N" />
+			<field name="Blocks" required="N" />
+			<field name="TradesInFlow" required="N" />
+			<field name="ManualOrderIndicator" required="N" />
+		</message>
+		<!-- FIX Adapter restricts the SecurityStatusRequest message to its Price session.  -->
+		<message name="SecurityStatusRequest" msgtype="e" msgcat="app">
+			<field name="SecurityStatusReqID" required="Y" />
+			<field name="SubscriptionRequestType" required="Y" />
+			<field name="Symbol" required="N" />
+			<field name="SecurityType" required="N" />
+			<field name="MaturityMonthYear" required="N" />
+			<field name="MaturityDay" required="N" />
+			<field name="PutOrCall" required="N" />
+			<field name="StrikePrice" required="N" />
+			<field name="OptAttribute" required="N" />
+			<field name="ContractTerm" required="N" />
+			<field name="LotsPerContract" required="N" />
+			<field name="SecurityID" required="N" />
+			<field name="SecurityAltID" required="N" />
+			<field name="SecurityExchange" required="N" />
+			<field name="SettlType" required="N" />
+			<field name="ManualOrderIndicator" required="N" />
+		</message>
+		<!-- FIX Adapter restricts the SecurityStatus message to its Price session.  -->
+		<message name="SecurityStatus" msgtype="f" msgcat="app">
+			<field name="SecurityStatusReqID" required="Y" />
+			<field name="Symbol" required="Y" />
+			<field name="SecurityType" required="Y" />
+			<field name="MaturityMonthYear" required="N" />
+			<field name="MaturityDay" required="N" />
+			<field name="PutOrCall" required="N" />
+			<field name="StrikePrice" required="N" />
+			<field name="OptAttribute" required="N" />
+			<field name="LotsPerContract" required="N" />
+			<field name="SecurityID" required="Y" />
+			<field name="SecurityAltID" required="N" />
+			<field name="SecurityExchange" required="Y" />
+			<field name="ContractTerm" required="N" />
+			<field name="SettlType" required="N" />
+			<field name="SecurityTradingStatus" required="Y" />
+			<field name="Text" required="N" />
+			<field name="Currency" required="N" />
+			<field name="ManualOrderIndicator" required="N" />
+		</message>
+		<message name="NewOrderSingle" msgtype="D" msgcat="app">
+			<field name="ClOrdID" required="Y" />
+			<field name="Symbol" required="N" />
+			<field name="SecurityType" required="N" />
+			<field name="MaturityMonthYear" required="N" />
+			<field name="MaturityDay" required="N" />
+			<field name="PutOrCall" required="N" />
+			<field name="StrikePrice" required="N" />
+			<field name="OptAttribute" required="N" />
+			<field name="LotsPerContract" required="N" />
+			<field name="SecurityID" required="N" />
+			<field name="SecurityAltID" required="N" />
+			<field name="SecurityExchange" required="Y" />
+			<field name="SettlType" required="N" />
+			<field name="ContractTerm" required="N" />
+			<field name="Account" required="Y" />
+			<field name="ClientID" required="N" />
+			<field name="ClearingAccount" required="N" />
+			<field name="FFT2" required="N" />
+			<field name="FFT3" required="N" />
+			<field name="Rule80A" required="N" />
+			<field name="CustomerOrFirm" required="N" />
+			<field name="Price" required="N" />
+			<field name="StopPx" required="N" />
+			<field name="OrderQty" required="Y" />
+			<field name="MinQty" required="N" />
+			<field name="MaxShow" required="N" />
+			<field name="Side" required="Y" />
+			<field name="OrdType" required="Y" />
+			<field name="OpenClose" required="N" />
+			<field name="TimeInForce" required="N" />
+			<field name="ExpireDate" required="N" />
+			<field name="OrderAndFillSource" required="N" />
+			<field name="PassiveAggressive" required="N" />
+			<field name="AutoAggressive" required="N" />
+			<field name="LeaveOrders" required="N" />
+			<field name="ExecInst" required="N" />
+			<field name="TransactTime" required="N" />
+            <field name="SecurityDesc" required="N" />
+            <field name="CtiCode" required="N" />
+            <field name="HandlInst" required="N" />
+            <field name="CustomerOrFirm" required="N" />
+            <field name="SecuritySubType" required="N" />
+            <field name="ManualOrderIndicator" required="N" />
+            <group name="NoRelatedSym" required="N">
+                <field name="UnderlyingSymbol" required="N" />
+                <field name="UnderlyingSecurityID" required="N" />
+                <field name="UnderlyingSecurityType" required="N" />
+                <field name="UnderlyingMaturityMonthYear" required="N" />
+                <field name="UnderlyingStrikePrice" required="N" />
+                <field name="UnderlyingPutOrCall" required="N" />
+                <field name="UnderlyingMaturityDay" required="N" />
+                <field name="UnderlyingOptAttribute" required="N" />
+                <field name="UnderlyingSecurityExchange" required="N" />
+                <field name="UnderlyingContractTerm" required="N" />
+                <field name="UnderlyingSecurityAltID" required="N" />
+                <field name="Side" required="N" />
+                <field name="RatioQty" required="N" />
+                <field name="LegPrice" required="N" />
+            </group>
+		</message>
+		<message name="ExecutionReport" msgtype="8" msgcat="app">
+            <field name="Account" required="N" />
+            <field name="ExecID" required="N" />
+            <field name="ExecRefID" required="N" />
+            <field name="OrderID" required="Y" />
+            <field name="SecondaryExecID" required="N" />
+            <field name="SecondaryOrderID" required="N" />
+            <field name="ClOrdID" required="N" />
+            <field name="ExecType" required="Y" />
+            <field name="OrigClOrdID" required="N" />
+            <field name="OrdRejReason" required="N" />
+            <field name="LastShares" required="N" />
+            <field name="MultiLegReportingType" required="N" />
+            <field name="OrdStatus" required="Y" />
+            <field name="LeavesQty" required="N" />
+            <field name="CumQty" required="Y" />
+            <field name="Text" required="N" />
+            <field name="ExecTransType" required="Y" />
+            <field name="TotalNumOrders" required="N" />
+            <field name="Symbol" required="N" />
+            <field name="SecurityType" required="N" />
+            <field name="MaturityMonthYear" required="N" />
+            <field name="MaturityDay" required="N" />
+            <field name="PutOrCall" required="N" />
+            <field name="StrikePrice" required="N" />
+            <field name="OptAttribute" required="N" />
+            <field name="LotsPerContract" required="N" />
+            <field name="SecurityID" required="N" />
+            <field name="SecurityAltID" required="N" />
+            <field name="SecurityExchange" required="N" />
+            <field name="ContractTerm" required="N" />
+            <field name="SettlType" required="N" />
+            <field name="Account" required="N" />
+            <field name="ClientID" required="N" />
+            <field name="ClearingAccount" required="N" />
+            <field name="FFT2" required="N" />
+            <field name="FFT3" required="N" />
+            <field name="Rule80A" required="N" />
+            <field name="CustomerOrFirm" required="N" />
+            <field name="Price" required="N" />
+            <field name="StopPx" required="N" />
+            <field name="OrderQty" required="N" />
+            <field name="MinQty" required="N" />
+            <field name="MaxShow" required="N" />
+            <field name="Side" required="N" />
+            <field name="OrdType" required="N" />
+            <field name="OpenClose" required="N" />
+            <field name="TimeInForce" required="N" />
+            <field name="ContraBroker" required="N" />
+            <field name="ExpireDate" required="N" />
+            <field name="ExecRestatementReason" required="N"/>
+            <field name="OrderAndFillSource" required="N" />
+            <field name="PassiveAggressive" required="N" />
+            <field name="AutoAggressive" required="N" />
+            <field name="LeaveOrders" required="N" />
+            <field name="LastPx" required="N" />
+            <field name="AvgPx" required="Y" />
+            <field name="OrderEnteredTime" required="N" />
+            <field name="TransactTime" required="N" />
+            <field name="SecuritySubType" required="N" />
+            <field name="ExchangeGateway" required="N" />
+            <field name="TTAccountType" required="N" />
+            <field name="TTUsername" required="N" />
+            <field name="Currency" required="N" />
+            <field name="TradeDate" required="N" />
+            <field name="FixingDate" required="N" />
+            <field name="SecurityDesc" required="N" />
+            <field name="NoAllocs" required="N" />
+            <field name="AllocAccount" required="N" />
+            <field name="ContraTrader" required="N" />
+            <field name="ContraBroker" required="N" />
+            <field name="TotalNumSecurities" required="N" />
+            <field name="CrossID" required="N" />
+            <field name="CrossType" required="N" />
+            <field name="AggressorIndicator" required="N" />
+            <field name="CorrelationClOrdID" required="N" />
+            <field name="RefSeqNum" required="N" />
+            <field name="TradeCondition" required="N" />
+            <field name="ManualOrderIndicator" required="N" />
+			<group name="NoRelatedSym" required="N">
+				<field name="UnderlyingSymbol" required="N" />
+				<field name="UnderlyingSecurityID" required="N" />
+				<field name="UnderlyingSecurityType" required="N" />
+				<field name="UnderlyingMaturityMonthYear" required="N" />
+				<field name="UnderlyingStrikePrice" required="N" />
+				<field name="UnderlyingPutOrCall" required="N" />
+				<field name="UnderlyingMaturityDay" required="N" />
+				<field name="UnderlyingOptAttribute" required="N" />
+				<field name="UnderlyingSecurityExchange" required="N" />
+				<field name="UnderlyingSecurityAltID" required="N" />
+				<field name="UnderlyingContractTerm" required="N" />
+				<field name="LegSide" required="N" />
+				<field name="RatioQty" required="N" />
+				<field name="UnderlyingCurrency" required="N" />
+                <field name="LegPrice" required="N" />
+			</group>
+		</message>
+		<message name="OrderCancelReplaceRequest" msgtype="G" msgcat="app">
+		    <field name="Account" required="N" />
+            <field name="ExecID" required="N" />
+            <field name="ExecRefID" required="N" />
+            <field name="OrderID" required="Y" />
+            <field name="SecondaryExecID" required="N" />
+            <field name="SecondaryOrderID" required="N" />
+            <field name="ClOrdID" required="N" />
+            <field name="ExecType" required="Y" />
+            <field name="OrigClOrdID" required="N" />
+            <field name="OrdRejReason" required="N" />
+            <field name="LastShares" required="N" />
+            <field name="MultiLegReportingType" required="N" />
+            <field name="OrdStatus" required="Y" />
+            <field name="LeavesQty" required="N" />
+            <field name="CumQty" required="Y" />
+            <field name="Text" required="N" />
+            <field name="ExecTransType" required="Y" />
+            <field name="TotalNumOrders" required="N" />
+            <field name="Symbol" required="N" />
+            <field name="SecurityType" required="N" />
+            <field name="MaturityMonthYear" required="N" />
+            <field name="MaturityDay" required="N" />
+            <field name="PutOrCall" required="N" />
+            <field name="StrikePrice" required="N" />
+            <field name="OptAttribute" required="N" />
+            <field name="LotsPerContract" required="N" />
+            <field name="SecurityID" required="N" />
+            <field name="SecurityAltID" required="N" />
+            <field name="SecurityExchange" required="N" />
+            <field name="ContractTerm" required="N" />
+            <field name="SettlType" required="N" />
+            <field name="Account" required="N" />
+            <field name="ClientID" required="N" />
+            <field name="ClearingAccount" required="N" />
+            <field name="FFT2" required="N" />
+            <field name="FFT3" required="N" />
+            <field name="Rule80A" required="N" />
+            <field name="CustomerOrFirm" required="N" />
+            <field name="Price" required="N" />
+            <field name="StopPx" required="N" />
+            <field name="OrderQty" required="N" />
+            <field name="MinQty" required="N" />
+            <field name="MaxShow" required="N" />
+            <field name="Side" required="N" />
+            <field name="OrdType" required="N" />
+            <field name="OpenClose" required="N" />
+            <field name="TimeInForce" required="N" />
+            <field name="ContraBroker" required="N" />
+            <field name="ExpireDate" required="N" />
+            <field name="ExecRestatementReason" required="N"/>
+            <field name="OrderAndFillSource" required="N" />
+            <field name="PassiveAggressive" required="N" />
+            <field name="AutoAggressive" required="N" />
+            <field name="LeaveOrders" required="N" />
+            <field name="LastPx" required="N" />
+            <field name="AvgPx" required="Y" />
+            <field name="OrderEnteredTime" required="N" />
+            <field name="TransactTime" required="Y" />
+            <field name="SecuritySubType" required="N" />
+            <field name="ExchangeGateway" required="N" />
+            <field name="TTAccountType" required="N" />
+            <field name="TTUsername" required="N" />
+            <field name="Currency" required="N" />
+            <field name="TradeDate" required="N" />
+            <field name="FixingDate" required="N" />
+            <field name="SecurityDesc" required="N" />
+            <field name="NoAllocs" required="N" />
+            <field name="AllocAccount" required="N" />
+            <field name="ContraTrader" required="N" />
+            <field name="ContraBroker" required="N" />
+            <field name="TotalNumSecurities" required="N" />
+            <field name="CrossID" required="N" />
+            <field name="CrossType" required="N" />
+            <field name="AggressorIndicator" required="N" />
+            <field name="CorrelationClOrdID" required="N" />
+            <field name="RefSeqNum" required="N" />
+            <field name="TradeCondition" required="N" />
+            <field name="ManualOrderIndicator" required="N" />
+			<group name="NoRelatedSym" required="N">
+				<field name="UnderlyingSymbol" required="N" />
+				<field name="UnderlyingSecurityID" required="N" />
+				<field name="UnderlyingSecurityType" required="N" />
+				<field name="UnderlyingMaturityMonthYear" required="N" />
+				<field name="UnderlyingStrikePrice" required="N" />
+				<field name="UnderlyingPutOrCall" required="N" />
+				<field name="UnderlyingMaturityDay" required="N" />
+				<field name="UnderlyingOptAttribute" required="N" />
+				<field name="UnderlyingSecurityExchange" required="N" />
+				<field name="UnderlyingSecurityAltID" required="N" />
+				<field name="UnderlyingContractTerm" required="N" />
+				<field name="LegSide" required="N" />
+				<field name="RatioQty" required="N" />
+				<field name="UnderlyingCurrency" required="N" />
+                <field name="LegPrice" required="N" />
+			</group>
+<!--
+			<field name="OrigClOrdID" required="N" />
+			<field name="ClOrdID" required="Y" />
+			<field name="OrderID" required="N" />
+			<field name="Symbol" required="N" />
+			<field name="SecurityType" required="N" />
+			<field name="MaturityMonthYear" required="N" />
+			<field name="MaturityDay" required="N" />
+			<field name="PutOrCall" required="N" />
+			<field name="StrikePrice" required="N" />
+			<field name="OptAttribute" required="N" />
+			<field name="LotsPerContract" required="N" />
+			<field name="SecurityID" required="N" />
+			<field name="SecurityAltID" required="N" />
+			<field name="SecurityExchange" required="N" />
+			<field name="ContractTerm" required="N" />
+			<field name="SettlType" required="N" />
+			<field name="Account" required="N" />
+			<field name="ClientID" required="N" />
+			<field name="ClearingAccount" required="N" />
+			<field name="FFT2" required="N" />
+			<field name="FFT3" required="N" />
+			<field name="Rule80A" required="N" />
+			<field name="CustomerOrFirm" required="N" />
+			<field name="Price" required="N" />
+			<field name="StopPx" required="N" />
+			<field name="OrderQty" required="Y" />
+			<field name="MinQty" required="N" />
+			<field name="MaxShow" required="N" />
+			<field name="Side" required="Y" />
+			<field name="OrdType" required="Y" />
+			<field name="OpenClose" required="N" />
+			<field name="TimeInForce" required="N" />
+			<field name="ExpireDate" required="N" />
+			<field name="OrderAndFillSource" required="N" />
+			<field name="PassiveAggressive" required="N" />
+			<field name="AutoAggressive" required="N" />
+			<field name="LeaveOrders" required="N" />
+			<field name="ExecInst" required="N" />
+			<field name="TransactTime" required="N" />
+            <field name="SecuritySubType" required="N" />
+            <group name="NoRelatedSym" required="N">
+                <field name="UnderlyingSymbol" required="N" />
+                <field name="UnderlyingSecurityID" required="N" />
+                <field name="UnderlyingSecurityType" required="N" />
+                <field name="UnderlyingMaturityMonthYear" required="N" />
+                <field name="UnderlyingStrikePrice" required="N" />
+                <field name="UnderlyingPutOrCall" required="N" />
+                <field name="UnderlyingMaturityDay" required="N" />
+                <field name="UnderlyingOptAttribute" required="N" />
+                <field name="UnderlyingSecurityExchange" required="N" />
+                <field name="UnderlyingSecurityAltID" required="N" />
+                <field name="UnderlyingContractTerm" required="N" />
+                <field name="Side" required="N" />
+                <field name="RatioQty" required="N" />
+                <field name="LegPrice" required="N" />
+            </group>
+-->
+		</message>
+		<message name="OrderCancelRequest" msgtype="F" msgcat="app">
+			<field name="OrigClOrdID" required="N" />
+			<field name="ClOrdID" required="Y" />
+			<field name="OrderID" required="N" />
+			<field name="Account" required="N" />
+			<field name="FFT2" required="N" />
+			<field name="FFT3" required="N" />
+			<field name="Rule80A" required="N" />
+			<field name="CustomerOrFirm" required="N" />
+			<field name="ClearingAccount" required="N" />
+			<field name="ClientID" required="N" />
+			<field name="Side" required="N" />
+			<field name="Symbol" required="N" />
+			<field name="TransactTime" required="N" />
+			<field name="SecurityDesc" required="N" />
+			<field name="SecurityType" required="N" />
+			<field name="CorrelationClOrdID" required="N" />
+			<field name="ManualOrderIndicator" required="N" />
+		</message>
+		<message name="OrderCancelReject" msgtype="9" msgcat="app">
+		    <field name="ClOrdID" required="Y" />
+			<field name="ExecID" required="Y" />
+			<field name="OrderID" required="Y" />
+			<field name="OrigClOrdID" required="N" />
+			<field name="SecondaryOrderID" required="N" />
+			<field name="OrdStatus" required="Y" />
+			<field name="TransactTime" required="Y" />
+			<field name="CxlRejResponseTo" required="Y" />
+			<field name="CxlRejReason" required="Y" />
+			<field name="Text" required="N" />
+			<field name="TransactTime" required="N" />
+			<field name="Symbol" required="N" />
+			<field name="Account" required="N" />
+			<field name="Side" required="N" />
+			<field name="SecurityDesc" required="N" />
+			<field name="SecurityID" required="N" />
+			<field name="SecurityExchange" required="N" />
+			<field name="CorrelationClOrdID" required="N" />
+			<field name="ManualOrderIndicator" required="N" />
+		</message>
+		<message name="OrderStatusRequest" msgtype="H" msgcat="app">
+			<field name="Account" required="N" />
+			<field name="ClOrdID" required="N" />
+			<field name="OrderID" required="N" />
+		</message>
+		<message name="BusinessMessageReject" msgtype="j" msgcat="app">
+			<field name="RefSeqNum" required="Y" />
+			<field name="RefMsgType" required="Y" />
+			<field name="BusinessRejectRefID" required="N" />
+			<field name="BusinessRejectReason" required="Y" />
+			<field name="Text" required="N" />
+			<field name="ManualOrderIndicator" required="N" />
+		</message>
+		<!-- Begin FIX Adapter Custom Messages -->
+		<message name="PositionReport" msgtype="UAP" msgcat="app">
+			<field name="Symbol" required="N" />
+			<field name="SecurityType" required="N" />
+			<field name="MaturityMonthYear" required="N" />
+			<field name="MaturityDay" required="N" />
+			<field name="PutOrCall" required="N" />
+			<field name="StrikePrice" required="N" />
+			<field name="OptAttribute" required="N" />
+			<field name="LotsPerContract" required="N" />
+			<field name="SecurityID" required="N" />
+			<field name="SecurityAltID" required="N" />
+			<field name="SecurityExchange" required="N" />
+			<field name="ContractTerm" required="N" />
+			<field name="SettlType" required="N" />
+			<field name="Account" required="N" />
+			<field name="Price" required="N" />
+			<field name="StopPx" required="N" />
+			<field name="OrderQty" required="N" />
+			<field name="MinQty" required="N" />
+			<field name="MaxShow" required="N" />
+			<field name="Side" required="N" />
+			<field name="OrdType" required="N" />
+			<field name="OpenClose" required="N" />
+			<field name="TimeInForce" required="N" />
+			<field name="ContraBroker" required="N" />
+			<field name="ExpireDate" required="N" />
+			<field name="OrderAndFillSource" required="N" />
+			<field name="PassiveAggressive" required="N" />
+			<field name="AutoAggressive" required="N" />
+			<field name="LeaveOrders" required="N" />
+			<field name="PosReqId" required="Y" />
+			<field name="PosMaintRptId" required="Y" />
+			<field name="TotalNumPosReports" required="Y" />
+			<field name="PosReqType" required="Y" />
+			<field name="RealizedPandL" required="N" />
+			<field name="LastShares" required="N" />
+			<field name="LastPx" required="N" />
+			<field name="OrderID" required="N" />
+			<field name="ExecID" required="N" />
+			<field name="SecondaryExecID" required="N" />
+			<field name="Text" required="N" />
+			<field name="MultiLegReportingType" required="N" />
+			<field name="TransactTime" required="N" />
+			<field name="SecuritySubType" required="N" />
+			<field name="ClearingAccount" required="N" />
+			<field name="ExchangeGateway" required="N" />
+			<field name="TTAccountType" required="N" />
+			<field name="TTUsername" required="N" />
+			<field name="ClientID" required="N" />
+			<field name="ClearingAccount" required="N" />
+			<field name="FFT2" required="N" />
+			<field name="FFT3" required="N" />
+			<field name="Rule80A" required="N" />
+			<field name="CustomerOrFirm" required="N" />
+			<field name="TradeCondition" required="N" />
+			<field name="Currency" required="N" />
+			<field name="TradeDate" required="N" />
+			<field name="FixingDate" required="N" />
+			<group name="NoRelatedSym" required="N">
+				<field name="UnderlyingSymbol" required="N" />
+				<field name="UnderlyingSecurityID" required="N" />
+				<field name="UnderlyingSecurityType" required="N" />
+				<field name="UnderlyingMaturityMonthYear" required="N" />
+				<field name="UnderlyingStrikePrice" required="N" />
+				<field name="UnderlyingPutOrCall" required="N" />
+				<field name="UnderlyingMaturityDay" required="N" />
+				<field name="UnderlyingOptAttribute" required="N" />
+				<field name="UnderlyingSecurityExchange" required="N" />
+				<field name="UnderlyingContractTerm" required="N" />
+				<field name="UnderlyingSecurityAltID" required="N" />
+				<field name="LegSide" required="N" />
+				<field name="RatioQty" required="N" />
+				<field name="UnderlyingCurrency" required="N" />
+                <field name="LegPrice" required="N" />
+			</group>
+		</message>
+		<!-- NOTE: This request is valid only for multi-session configurations. -->
+		<message name="RequestForPosition" msgtype="UAN" msgcat="app">
+			<field name="Account" required="N" />
+			<field name="PosReqId" required="Y" />
+			<field name="PosReqType" required="Y" />
+		</message>
+		<message name="GatewayStatusRequest" msgtype="UAR" msgcat="app">
+			<field name="GatewayStatusReqId" required="Y" />
+			<field name="SubscriptionRequestType" required="Y" />
+		</message>
+		<message name="GatewayStatus" msgtype="UAT" msgcat="app">
+			<field name="GatewayStatusReqId" required="Y" />
+			<field name="UnsolicitedIndicator" required="N" />
+			<group name="NoGatewayStatus" required="Y">
+				<field name="GatewayStatus" required="Y" />
+				<field name="SecurityExchange" required="Y" />
+				<field name="ExchangeGateway" required="Y" />
+				<field name="SubExchangeGateway" required="Y" />
+				<field name="Text" required="N" />
+			</group>
+		</message>
+		<!-- End FIX Adapter Custom Messages -->
+	</messages>
+	<fields>
+
+        <!-- CME CUSTOM FIELDS -->
+        <field number="19" name="ExecRefID" type="STRING" />
+        <field number="78" name="NoAllocs" type="CHAR" />
+        <field number="79" name="AllocAccount" type="STRING" />
+        <field number="107" name="SecurityDesc" type="STRING" />
+        <field number="142" name="SenderLocationID" type="STRING" />
+        <field number="143" name="TargetLocationID" type="STRING" />
+        <field number="337" name="ContraTrader" type="STRING" />
+        <field number="527" name="SecondaryExecID" type="STRING" />
+        <field number="548" name="CrossID" type="STRING" />
+        <field number="549" name="CrossType" type="INT" />
+        <field number="1028" name="ManualOrderIndicator" type="BOOLEAN" />
+        <field number="1057" name="AggressorIndicator" type="CHAR" />
+        <field number="1603" name="ApplicationSystemName" type="STRING" />
+        <field number="1604" name="TradingSystemVersion" type="STRING" />
+        <field number="1605" name="ApplicationSystemVendor" type="STRING" />
+        <field number="9717" name="CorrelationClOrdID" type="STRING" />
+        <!-- END CME CUSTOM FIELDS -->
+
+        <field number="1" name="Account" type="STRING" />
+        <field number="6" name="AvgPx" type="PRICE" />
+        <field number="7" name="BeginSeqNo" type="INT" />
+        <field number="8" name="BeginString" type="STRING" />
+        <field number="9" name="BodyLength" type="INT" />
+        <field number="10" name="CheckSum" type="STRING" />
+        <field number="11" name="ClOrdID" type="STRING" />
+        <field number="14" name="CumQty" type="QTY" />
+        <field number="15" name="Currency" type="CURRENCY" />
+        <field number="16" name="EndSeqNo" type="INT" />
+        <field number="17" name="ExecID" type="STRING" />
+        <field number="18" name="ExecInst" type="CHAR" />
+        <field number="20" name="ExecTransType" type="CHAR" />
+        <field number="21" name="HandlInst" type="CHAR" />
+        <field number="31" name="LastPx" type="PRICE" />
+        <field number="32" name="LastShares" type="QTY" />
+        <field number="34" name="MsgSeqNum" type="INT" />
+        <field number="35" name="MsgType" type="STRING" />
+        <field number="36" name="NewSeqNo" type="INT" />
+        <field number="37" name="OrderID" type="STRING" />
+        <field number="38" name="OrderQty" type="QTY" />
+        <field number="39" name="OrdStatus" type="CHAR" />
+        <field number="40" name="OrdType" type="CHAR" />
+        <field number="41" name="OrigClOrdID" type="STRING" />
+        <field number="43" name="PossDupFlag" type="BOOLEAN" />
+        <field number="44" name="Price" type="PRICE" />
+        <field number="45" name="RefSeqNum" type="INT" />
+        <field number="47" name="Rule80A" type="CHAR" />
+        <field number="48" name="SecurityID" type="STRING" />
+        <field number="49" name="SenderCompID" type="STRING" />
+        <field number="50" name="SenderSubID" type="STRING" />
+        <field number="52" name="SendingTime" type="UTCTIMESTAMP" />
+        <field number="53" name="Shares" type="QTY" />
+        <field number="54" name="Side" type="CHAR" />
+        <field number="55" name="Symbol" type="STRING" />
+        <field number="56" name="TargetCompID" type="STRING" />
+        <field number="57" name="TargetSubID" type="STRING" />
+        <field number="58" name="Text" type="STRING" />
+        <field number="59" name="TimeInForce" type="CHAR" />
+        <field number="60" name="TransactTime" type="UTCTIMESTAMP" />
+        <field number="63" name="SettlType" type="STRING" />
+        <field number="75" name="TradeDate" type="STRING" />
+        <field number="77" name="OpenClose" type="CHAR" />
+        <field number="96" name="RawData" type="DATA" />
+        <field number="97" name="PossResendFlag" type="BOOLEAN" />
+        <field number="98" name="EncryptMethod" type="INT" />
+        <field number="99" name="StopPx" type="PRICE" />
+        <field number="102" name="CxlRejReason" type="INT" />
+        <field number="103" name="OrdRejReason" type="INT" />
+        <field number="108" name="HeartBtInt" type="INT" />
+        <field number="109" name="ClientID" type="STRING" />
+        <field number="110" name="MinQty" type="QTY" />
+        <field number="112" name="TestReqID" type="STRING" />
+        <field number="116" name="OnBehalfOfSubID" type="STRING" />
+        <field number="122" name="OrigSendingTime" type="UTCTIMESTAMP" />
+        <field number="123" name="GapFillFlag" type="BOOLEAN" />
+        <field number="129" name="DeliverToSubID" type="STRING" />
+        <field number="141" name="ResetSeqNumFlag" type="BOOLEAN" />
+        <field number="146" name="NoRelatedSym" type="INT" />
+        <field number="150" name="ExecType" type="CHAR" />
+        <field number="151" name="LeavesQty" type="QTY" />
+        <field number="167" name="SecurityType" type="STRING" />
+        <field number="198" name="SecondaryOrderID" type="STRING" />
+        <field number="200" name="MaturityMonthYear" type="MONTHYEAR" />
+        <field number="201" name="PutOrCall" type="INT" />
+        <field number="202" name="StrikePrice" type="PRICE" />
+        <field number="204" name="CustomerOrFirm" type="INT" />
+        <field number="205" name="MaturityDay" type="DAYOFMONTH" />
+        <field number="206" name="OptAttribute" type="CHAR" />
+        <field number="207" name="SecurityExchange" type="EXCHANGE" />
+        <field number="210" name="MaxShow" type="QTY" />
+        <field number="262" name="MDReqID" type="STRING" />
+        <field number="263" name="SubscriptionRequestType" type="CHAR" />
+        <field number="264" name="MarketDepth" type="INT" />
+        <field number="265" name="MDUpdateType" type="INT" />
+        <field number="266" name="AggregatedBook" type="BOOLEAN" />
+        <field number="267" name="NoMDEntryTypes" type="INT" />
+        <field number="268" name="NoMDEntries" type="INT" />
+        <field number="269" name="MDEntryType" type="CHAR" />
+        <field number="270" name="MDEntryPx" type="PRICE" />
+        <field number="271" name="MDEntrySize" type="QTY" />
+        <field number="272" name="MDEntryDate" type="UTCDATE" />
+        <field number="273" name="MDEntryTime" type="UTCTIMEONLY" />
+        <field number="277" name="TradeCondition" type="CHAR" />
+        <field number="278" name="MDEntryID" type="STRING" />
+        <field number="279" name="MDUpdateAction" type="CHAR" />
+        <field number="290" name="MDEntryPositionNo" type="INT" />
+        <field number="308" name="UnderlyingSecurityExchange" type="EXCHANGE" />
+        <field number="309" name="UnderlyingSecurityID" type="STRING" />
+        <field number="310" name="UnderlyingSecurityType" type="STRING" />
+        <field number="311" name="UnderlyingSymbol" type="STRING" />
+        <field number="313" name="UnderlyingMaturityMonthYear" type="MONTHYEAR" />
+        <field number="314" name="UnderlyingMaturityDay" type="DAYOFMONTH" />
+        <field number="316" name="UnderlyingStrikePrice" type="PRICE" />
+        <field number="315" name="UnderlyingPutOrCall" type="INT" />
+        <field number="317" name="UnderlyingOptAttribute" type="CHAR" />
+        <field number="318" name="UnderlyingCurrency" type="CURRENCY" />
+        <field number="319" name="RatioQty" type="QTY" />
+        <field number="320" name="SecurityReqID" type="STRING" />
+        <field number="321" name="SecurityRequestType" type="INT" />
+        <field number="322" name="SecurityResponseID" type="STRING" />
+        <field number="323" name="SecurityResponseType" type="INT" />
+        <field number="324" name="SecurityStatusReqID" type="STRING" />
+        <field number="325" name="UnsolicitedIndicator" type="BOOLEAN" />
+        <field number="326" name="SecurityTradingStatus" type="INT" />
+        <field number="369" name="LastMsgSeqNumProcessed" type="INT" />
+        <field number="371" name="RefTagID" type="INT" />
+        <field number="372" name="RefMsgType" type="STRING" />
+        <field number="373" name="SessionRejectReason" type="INT" />
+        <field number="375" name="ContraBroker" type="STRING" />
+        <field number="378" name="ExecRestatementReason" type="INT" />
+        <field number="379" name="BusinessRejectRefID" type="STRING" />
+        <field number="380" name="BusinessRejectReason" type="INT" />
+        <field number="387" name="TotalVolumeTraded" type="QTY" />
+        <field number="393" name="TotalNumSecurities" type="INT" />
+        <field number="432" name="ExpireDate" type="LOCALMKTDATE" />
+        <field number="434" name="CxlRejResponseTo" type="CHAR" />
+        <field number="440" name="ClearingAccount" type="STRING" />
+        <field number="442" name="MultiLegReportingType" type="CHAR" />
+
+        <!-- FIX Adapter Custom Field Definitions -->
+        <field number="789" name="NextExpectedMsgSeqNum" type="INT" />
+        <field number="864" name="NoEvents" type="INT" />
+        <field number="865" name="EventType" type="INT" />
+        <field number="866" name="EventDate" type="LOCALMKTDATE" />
+        <field number="6038" name="OrderEnteredTime" type="UTCTIMESTAMP" />
+        <field number="9702" name="CtiCode" type="CHAR" />
+        <field number="10442" name="ExpectedFillType" type="INT" />
+        <field number="10455" name="SecurityAltID" type="STRING" />
+        <field number="10456" name="UnderlyingSecurityAltID" type="STRING" />
+        <field number="10460" name="LotsPerContract" type="INT" />
+        <field number="10541" name="FixingDate" type="STRING" />
+        <field number="10553" name="TTUsername" type="STRING" />
+        <field number="10566" name="LegPrice" type="PRICE" />
+        <field number="10762" name="SecuritySubType" type="STRING" />
+        <field number="16102" name="FFT2" type="STRING" />
+        <field number="16103" name="FFT3" type="STRING" />
+        <field number="16210" name="RealizedPandL" type="CURRENCY" />
+        <field number="16728" name="TotalNumOrders" type="INT" />
+        <field number="16451" name="PriceDisplayType" type="INT" />
+        <field number="16452" name="TickSize" type="FLOAT" />
+        <field number="16454" name="PointValue" type="FLOAT" />
+        <field number="16456" name="NumTickTblEntries" type="INT" />
+        <field number="16457" name="NumTicks" type="INT" />
+        <field number="16458" name="MaxPrice" type="PRICE" />
+        <field number="16460" name="DeliveryUnit" type="INT" />
+        <field number="16461" name="LotSize" type="INT" />
+        <field number="16462" name="UnderlyingLotsPerContract" type="INT" />
+        <field number="16463" name="Blocks" type="INT" />
+        <field number="16464" name="TradesInFlow" type="CHAR" />
+        <field number="16480" name="PassiveAggressive" type="CHAR" />
+        <field number="16481" name="AutoAggressive" type="BOOLEAN" />
+        <field number="16482" name="LeaveOrders" type="BOOLEAN" />
+        <field number="16486" name="MDEntryState" type="INT" />
+        <field number="16487" name="MDEntrySizeType" type="STRING" />
+        <field number="16488" name="AggressorSide" type="INT" />
+        <field number="16552" name="ExchTickSize" type="FLOAT" />
+        <field number="16554" name="ExchPointValue" type="FLOAT" />
+        <field number="16624" name="LegSide" type="INT" />
+        <field number="16710" name="PosReqId" type="STRING" />
+        <field number="16721" name="PosMaintRptId" type="STRING" />
+        <field number="16724" name="PosReqType" type="INT" />
+        <field number="16727" name="TotalNumPosReports" type="INT" />
+        <field number="16899" name="MarginExcess" type="STRING" />
+        <field number="17000" name="RequestTickTable" type="BOOLEAN" />
+        <field number="18000" name="ForceLogout" type="INT" />
+        <field number="18103" name="OrderAndFillSource" type="INT" />
+        <field number="18011" name="ApplicationName" type="STRING" />
+        <field number="18200" name="GatewayStatusReqId" type="STRING" />
+        <field number="18201" name="NoGatewayStatus" type="INT" />
+        <field number="18202" name="GatewayStatus" type="INT" />
+        <field number="18203" name="ExchangeGateway" type="STRING" />
+        <field number="18204" name="SubExchangeGateway" type="INT" />
+        <field number="18205" name="TTAccountType" type="STRING" />
+        <field number="18206" name="NoGateways" type="INT" />
+        <field number="18210" name="PriceFeedStatus" type="INT" />
+        <field number="18211" name="ContractTerm" type="CHAR" />
+        <field number="18212" name="UnderlyingContractTerm" type="CHAR" />
+        <!-- End FIX Adapter Field Definitions -->
+	</fields>
+</fix>

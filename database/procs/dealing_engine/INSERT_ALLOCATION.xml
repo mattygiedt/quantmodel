@@ -1,0 +1,83 @@
+<bdsq>
+    <procedure name="INSERT_ALLOCATION" type="UPDATE" >
+        <input name="p_id" type="string" quote="false" />
+        <input name="p_allocation_id" type="string" quote="true" />
+        <input name="p_order_id" type="string" quote="true" />
+        <input name="p_account_id" type="string" quote="false" />
+        <input name="p_instrument_id" type="string" quote="false" />
+        <input name="p_side_code" type="string" quote="false" />
+        <input name="p_allocation_qty" type="string" quote="true" />
+        <input name="p_released_qty" type="string" quote="true" />
+        <input name="p_executed_qty" type="string" quote="true" />
+        <input name="p_executed_val" type="string" quote="true" />
+        <input name="p_average_prc" type="string" quote="true" />
+        <input name="p_added_datetime" type="string" quote="true" />
+        <input name="p_added_by" type="string" quote="true" />
+        <input name="p_updated_datetime" type="string" quote="true" />
+        <input name="p_updated_by" type="string" quote="true" />
+
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_id INT,
+                IN p_allocation_id VARCHAR(16),
+                IN p_order_id VARCHAR(16),
+                IN p_account_id INT,
+                IN p_instrument_id INT,
+                IN p_side_code TINYINT,
+                IN p_allocation_qty VARCHAR(30),
+                IN p_released_qty VARCHAR(30),
+                IN p_executed_qty VARCHAR(30),
+                IN p_executed_val VARCHAR(30),
+                IN p_average_prc VARCHAR(30),
+                IN p_added_datetime CHAR(20),
+                IN p_added_by VARCHAR(16),
+                IN p_updated_datetime CHAR(20),
+                IN p_updated_by VARCHAR(16)
+            )
+            BEGIN
+
+                CALL UPDATE_PARAMETER( 'DEALING_ENGINE', 'curr_allocation_id', p_id );
+
+                INSERT INTO allocations (
+                    allocation_id,
+                    order_id,
+                    account_id,
+                    instrument_id,
+                    side_code,
+                    allocation_qty,
+                    released_qty,
+                    executed_qty,
+                    executed_val,
+                    average_prc,
+                    added_datetime,
+                    added_by,
+                    updated_datetime,
+                    updated_by )
+                VALUES (
+                    p_allocation_id,
+                    p_order_id,
+                    p_account_id,
+                    p_instrument_id,
+                    p_side_code,
+                    p_allocation_qty,
+                    p_released_qty,
+                    p_executed_qty,
+                    p_executed_val,
+                    p_average_prc,
+                    p_added_datetime,
+                    p_added_by,
+                    p_updated_datetime,
+                    p_updated_by );
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

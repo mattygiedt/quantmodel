@@ -1,0 +1,27 @@
+<bdsq>
+    <procedure name="GET_ACCOUNT_CONFIGURATION" type="SELECT" >
+        <input name="p_account_id" type="string" quote="false" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS `SP_NAME`;
+
+            DELIMITER |
+
+            CREATE PROCEDURE `SP_NAME`(
+                IN p_account_id INT
+            )
+            BEGIN
+
+                SELECT  name,
+                        value
+                FROM    account_configuration
+                WHERE   account_id = p_account_id
+                ORDER BY name;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>

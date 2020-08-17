@@ -1,0 +1,42 @@
+<bdsq>
+    <procedure name="GET_ACCOUNT_REPORT_DATA" type="SELECT" >
+        <input name="p_account_id" type="string" quote="false" />
+        <input name="p_beg_dt" type="string" quote="true" />
+        <input name="p_end_dt" type="string" quote="true" />
+        <content>
+            <![CDATA[
+
+            DROP PROCEDURE IF EXISTS SP_NAME;
+
+            DELIMITER |
+
+            CREATE PROCEDURE SP_NAME(
+                IN p_account_id INT,
+                IN p_beg_dt CHAR(10),
+                IN p_end_dt CHAR(10)
+            )
+            BEGIN
+
+                SELECT  a.*,
+                        i.name as instrument_name,
+                        i.security_exchange,
+                        acc.name as account_name,
+                        acc.custody_account_id,
+                        acc.giveup_account_id,
+                        acc.giveup_firm_id
+                FROM    allocations a, instrument i, account acc
+                WHERE   a.added_datetime BETWEEN p_beg_dt AND p_end_dt
+                    AND a.account_id = p_account_id
+                    AND a.account_id = acc.account_id
+                    AND a.instrument_id = i.instrument_id
+                HAVING  a.executed_qty > 0
+                ORDER BY a.side_code;
+
+            END|
+            DELIMITER ;
+            ]]>
+        </content>
+    </procedure>
+</bdsq>
+
+ 
