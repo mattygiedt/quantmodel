@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+
+<project name="C# build" default="all" basedir=".">
+
+<!--
+            The following parameters may need to
+            be modified for your local instance:
+
+            win.dir
+-->
+
+    <property name="win.dir" value="c:/windows" />
+    <property name="framework.dir" value="${win.dir}/microsoft.net/framework/v2.0.50727" />
+    <property name="assembly.dir" value="${win.dir}/assembly" />
+
+    <property name="root.dir" value="." />
+    <property name="libs.dir" value="../libs" />
+    <property name="source.dir" value="${root.dir}" />
+    <property name="release.dir" value="../../../../release/viewer/" />
+    <property name="installer.kottke.dir" value="../installer/viewer/kottke/" />
+
+    <property name="verbose" value="true" />
+    <property name="debug" value="debug-" />
+    <property name="optimize" value="optimize+" />
+    <property name="references" value="System.Web.dll,System.Xml.dll,System.Data.dll,System.Messaging.dll,System.Windows.Forms.dll,System.Drawing.dll,System.dll,System.Runtime.Remoting.dll,System.EnterpriseServices.dll" />
+
+    <target name="all" depends="build, release" />
+
+    <target name="build" depends="">
+        <csc    target="winexe"
+                output="${root.dir}/viewer.exe"
+                verbose="${verbose}"
+                platform="x86" >
+            <resources basedir="${source.dir}">
+                <include name="**/*.resx" />
+            </resources>
+            <sources basedir="${source.dir}">
+                <include name="**/*.cs" />
+            </sources>
+            <references basedir="${libs.dir}">
+                <include name="common.dll" />
+                <include name="protobuf.dll" />
+                <include name="log4net.dll" />
+                <include name="google/Google.ProtocolBuffers.dll" />
+                <include name="zmq/ZeroMQ.dll" />
+                <include name="gui/Eyefinder.dll" />
+                <include name="gui/XPExplorerBar.dll" />
+                <include name="gui/GlacialTreeList.dll" />
+                <include name="gui/CheckBoxComboBox.dll" />
+                <include name="gui/System.Windows.Forms.DataVisualization.dll" />
+            </references>
+            <arg value="/reference:${references}" />
+            <arg value="/main:com.quantmodel.client.Viewer" />
+            <arg value="/${debug}" />
+            <arg value="/${optimize}" />
+        </csc>
+    </target>
+
+    <target name="release" depends="">
+        <copy file="viewer.exe" todir="${release.dir}" failonerror="true" />
+        <copy file="${libs.dir}/common.dll" todir="${release.dir}" failonerror="true" />
+        <copy file="${libs.dir}/protobuf.dll" todir="${release.dir}" failonerror="true" />
+
+        <copy file="viewer.exe" todir="${installer.kottke.dir}" failonerror="true" />
+        <copy file="${libs.dir}/common.dll" todir="${installer.kottke.dir}" failonerror="true" />
+        <copy file="${libs.dir}/protobuf.dll" todir="${installer.kottke.dir}" failonerror="true" />
+
+    </target>
+
+</project>

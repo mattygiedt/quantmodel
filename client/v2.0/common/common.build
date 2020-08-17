@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<project name="C# build" default="all" basedir=".">
+
+<!--
+            The following parameters may need to
+            be modified for your local instance:
+
+            win.dir
+-->
+
+    <property name="win.dir" value="c:/windows" />
+    <property name="framework.dir" value="${win.dir}/microsoft.net/framework/v2.0.50727" />
+    <property name="assembly.dir" value="${win.dir}/assembly" />
+
+    <property name="root.dir" value="." />
+    <property name="libs.dir" value="../libs" />
+    <property name="source.dir" value="${root.dir}" />
+
+    <property name="verbose" value="true" />
+    <property name="debug" value="debug-" />
+    <property name="optimize" value="optimize+" />
+    <property name="references" value="System.Web.dll,System.Xml.dll,System.Data.dll,System.Messaging.dll,System.Windows.Forms.dll,System.Drawing.dll,System.dll,System.Runtime.Remoting.dll,System.EnterpriseServices.dll" />
+
+    <target name="all" depends="common" />
+
+    <target name="common" depends="">
+        <csc    target="library"
+                output="${libs.dir}/common.dll"
+                verbose="${verbose}"
+                platform="x86" >
+            <resources basedir="${source.dir}">
+                <include name="**/*.resx" />
+            </resources>
+            <sources basedir="${source.dir}">
+                <include name="**/*.cs" />
+            </sources>
+            <references basedir="${libs.dir}">
+                <include name="log4net.dll" />
+                <include name="protobuf.dll" />
+                <include name="gui/GlacialTreeList.dll" />
+                <include name="google/Google.ProtocolBuffers.dll" />
+            </references>
+            <arg value="/reference:${references}" />
+            <arg value="/${debug}" />
+            <arg value="/${optimize}" />
+        </csc>
+    </target>
+
+</project>
